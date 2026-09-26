@@ -1,0 +1,16 @@
+﻿# Maven build output
+target/
+
+# VS Code settings
+.vscode/
+
+# Windows junk
+Thumbs.db
+desktop.ini
+
+# IntelliJ/Eclipse
+*.iml
+.idea/
+.classpath
+.project
+.settings/
