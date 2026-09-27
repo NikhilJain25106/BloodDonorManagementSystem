@@ -1,4 +1,4 @@
-﻿# 🩸 LifeDrop - Blood Donor Management System
+# 🩸 LifeDrop - Blood Donor Management System
 
 > A full-stack web application to manage blood donors, built as a Java college mini-project from scratch.
 
