@@ -86,59 +86,38 @@ This project was built entirely from scratch using **Java Servlets, JSP, JDBC, a
 
 ## 📁 Project Structure
 
-BloodDonorManagementSystem/
-│
-├── database/
-│ └── schema.sql # MySQL schema + sample data
-│
-├── screenshots/ # Project screenshots
-│
-├── src/main/
-│ ├── java/com/blooddonor/
-│ │ ├── model/
-│ │ │ ├── Donor.java # Donor POJO
-│ │ │ └── Admin.java # Admin POJO
-│ │ │
-│ │ ├── dao/
-│ │ │ ├── DonorDAO.java # Donor CRUD + search queries
-│ │ │ └── AdminDAO.java # Admin login query
-│ │ │
-│ │ ├── servlet/
-│ │ │ ├── RegisterDonorServlet.java # Handles registration form
-│ │ │ ├── SearchDonorServlet.java # Handles donor search
-│ │ │ ├── AdminLoginServlet.java # Handles admin login
-│ │ │ ├── AdminLogoutServlet.java # Invalidates session
-│ │ │ ├── AdminDashboardServlet.java# Loads all donors
-│ │ │ ├── UpdateDonorServlet.java # Edit + update donor
-│ │ │ └── DeleteDonorServlet.java # Delete donor
-│ │ │
-│ │ ├── filter/
-│ │ │ └── AdminAuthFilter.java # Blocks unauthenticated access
-│ │ │
-│ │ └── util/
-│ │ ├── DBConnection.java # JDBC connection helper
-│ │ ├── PasswordUtil.java # BCrypt hash + verify
-│ │ └── GenerateAdminHash.java # One-time admin setup utility
-│ │
-│ └── webapp/
-│ ├── index.jsp # Home page
-│ ├── register.jsp # Donor registration form
-│ ├── search.jsp # Search donors page
-│ ├── admin-login.jsp # Admin login form
-│ ├── admin-dashboard.jsp # Admin CRUD table
-│ ├── edit-donor.jsp # Edit donor form
-│ ├── contact.jsp # Contact page
-│ ├── includes/
-│ │ ├── header.jsp # Shared navbar
-│ │ └── footer.jsp # Shared footer
-│ ├── assets/
-│ │ ├── css/style.css # Custom healthcare theme
-│ │ └── js/validation.js # Client-side validation
-│ └── WEB-INF/
-│ └── web.xml # App config + session timeout
-│
-└── pom.xml # Maven dependencies
-
+| Path | Description |
+|------|-------------|
+| `database/schema.sql` | MySQL schema + sample data |
+| `screenshots/` | Project screenshots |
+| `src/main/java/com/blooddonor/model/Donor.java` | Donor POJO |
+| `src/main/java/com/blooddonor/model/Admin.java` | Admin POJO |
+| `src/main/java/com/blooddonor/dao/DonorDAO.java` | Donor CRUD + search queries |
+| `src/main/java/com/blooddonor/dao/AdminDAO.java` | Admin login query |
+| `src/main/java/com/blooddonor/servlet/RegisterDonorServlet.java` | Handles registration form |
+| `src/main/java/com/blooddonor/servlet/SearchDonorServlet.java` | Handles donor search |
+| `src/main/java/com/blooddonor/servlet/AdminLoginServlet.java` | Handles admin login |
+| `src/main/java/com/blooddonor/servlet/AdminLogoutServlet.java` | Invalidates session |
+| `src/main/java/com/blooddonor/servlet/AdminDashboardServlet.java` | Loads all donors |
+| `src/main/java/com/blooddonor/servlet/UpdateDonorServlet.java` | Edit and update donor |
+| `src/main/java/com/blooddonor/servlet/DeleteDonorServlet.java` | Delete donor |
+| `src/main/java/com/blooddonor/filter/AdminAuthFilter.java` | Blocks unauthenticated access |
+| `src/main/java/com/blooddonor/util/DBConnection.java` | JDBC connection helper |
+| `src/main/java/com/blooddonor/util/PasswordUtil.java` | BCrypt hash and verify |
+| `src/main/java/com/blooddonor/util/GenerateAdminHash.java` | One-time admin setup utility |
+| `src/main/webapp/index.jsp` | Home page |
+| `src/main/webapp/register.jsp` | Donor registration form |
+| `src/main/webapp/search.jsp` | Search donors page |
+| `src/main/webapp/admin-login.jsp` | Admin login form |
+| `src/main/webapp/admin-dashboard.jsp` | Admin CRUD table |
+| `src/main/webapp/edit-donor.jsp` | Edit donor form |
+| `src/main/webapp/contact.jsp` | Contact page |
+| `src/main/webapp/includes/header.jsp` | Shared navbar |
+| `src/main/webapp/includes/footer.jsp` | Shared footer |
+| `src/main/webapp/assets/css/style.css` | Custom healthcare theme |
+| `src/main/webapp/assets/js/validation.js` | Client-side validation |
+| `src/main/webapp/WEB-INF/web.xml` | App config and session timeout |
+| `pom.xml` | Maven dependencies |
 
 ---
 
@@ -312,3 +291,4 @@ This project is built as a college mini-project for educational purposes.
 ---
 
 *Built with ❤️ using Java Servlets, JSP, JDBC and MySQL*
+
