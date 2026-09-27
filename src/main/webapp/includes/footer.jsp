@@ -13,7 +13,8 @@
                 <p style="font-size:0.85rem;line-height:1.7;max-width:280px;">A Blood Donor Management System connecting donors with those in need. Built as a college mini-project.</p>
                 <div class="d-flex gap-3 mt-3">
                     <i class="fa-brands fa-github footer-link fa-lg" style="cursor:pointer;"></i>
-                    <i class="fa-solid fa-envelope footer-link fa-lg" style="cursor:pointer;"></i>
+  
+             <i class="fa-solid fa-envelope footer-link fa-lg" style="cursor:pointer;"></i>
                 </div>
             </div>
             <div class="col-lg-2 col-6">
