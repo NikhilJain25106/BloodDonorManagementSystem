@@ -113,55 +113,34 @@ Browser Response
 
 ## Project Structure
 
-BloodDonorManagementSystem/
-│
-├── database/
-│ └── schema.sql # MySQL schema + sample data
-│
-├── screenshots/ # Project screenshots for README
-│
-├── src/main/java/com/blooddonor/
-│ ├── model/
-│ │ ├── Donor.java # Donor data class
-│ │ └── Admin.java # Admin data class
-│ ├── dao/
-│ │ ├── DonorDAO.java # Donor CRUD + search + duplicate check
-│ │ └── AdminDAO.java # Admin login lookup
-│ ├── servlet/
-│ │ ├── RegisterDonorServlet.java
-│ │ ├── SearchDonorServlet.java
-│ │ ├── AdminLoginServlet.java
-│ │ ├── AdminLogoutServlet.java
-│ │ ├── AdminDashboardServlet.java
-│ │ ├── UpdateDonorServlet.java
-│ │ └── DeleteDonorServlet.java
-│ ├── filter/
-│ │ └── AdminAuthFilter.java # Blocks unauthenticated admin access
-│ └── util/
-│ ├── DBConnection.java # JDBC connection (supports Railway env vars)
-│ ├── PasswordUtil.java # BCrypt hash and verify
-│ └── GenerateAdminHash.java # One-time admin account setup
-│
-├── src/main/webapp/
-│ ├── index.jsp # Home page
-│ ├── register.jsp # Donor registration form
-│ ├── search.jsp # Search donors
-│ ├── admin-login.jsp # Admin login
-│ ├── admin-dashboard.jsp # Admin CRUD table
-│ ├── edit-donor.jsp # Edit donor form
-│ ├── contact.jsp # Contact page
-│ ├── includes/
-│ │ ├── header.jsp # Shared navbar
-│ │ └── footer.jsp # Shared footer
-│ ├── assets/
-│ │ ├── css/style.css # Custom healthcare theme
-│ │ └── js/validation.js # Client-side validation
-│ └── WEB-INF/
-│ └── web.xml # App config + session timeout
-│
-├── nixpacks.toml # Railway build config
-├── Procfile # Railway start command
-└── pom.xml # Maven dependencies
+| Path | Description |
+|------|-------------|
+| database/schema.sql | MySQL schema and sample data |
+| src/.../model/Donor.java | Donor data class |
+| src/.../model/Admin.java | Admin data class |
+| src/.../dao/DonorDAO.java | Donor CRUD, search, duplicate check |
+| src/.../dao/AdminDAO.java | Admin login lookup |
+| src/.../servlet/RegisterDonorServlet.java | Handles registration form |
+| src/.../servlet/SearchDonorServlet.java | Handles donor search |
+| src/.../servlet/AdminLoginServlet.java | Handles admin login |
+| src/.../servlet/AdminDashboardServlet.java | Loads all donors |
+| src/.../servlet/UpdateDonorServlet.java | Edit and update donor |
+| src/.../servlet/DeleteDonorServlet.java | Delete donor |
+| src/.../filter/AdminAuthFilter.java | Blocks unauthenticated access |
+| src/.../util/DBConnection.java | JDBC connection helper |
+| src/.../util/PasswordUtil.java | BCrypt hash and verify |
+| src/main/webapp/index.jsp | Home page |
+| src/main/webapp/register.jsp | Registration form |
+| src/main/webapp/search.jsp | Search donors |
+| src/main/webapp/admin-login.jsp | Admin login |
+| src/main/webapp/admin-dashboard.jsp | Admin CRUD table |
+| src/main/webapp/edit-donor.jsp | Edit donor form |
+| src/main/webapp/contact.jsp | Contact page |
+| src/main/webapp/assets/css/style.css | Custom healthcare theme |
+| pom.xml | Maven dependencies |
+| nixpacks.toml | Railway build config |
+
+---
 
 
 ---
