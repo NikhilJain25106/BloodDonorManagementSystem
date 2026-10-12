@@ -1,7 +1,7 @@
 <%@ include file="includes/header.jsp" %>
 
 <!-- HERO -->
-<section style="background:linear-gradient(145deg,#0f172a 0%,#1a3a6e 45%,#7f1d1d 100%);min-height:90vh;display:flex;align-items:center;padding:5rem 0;position:relative;overflow:hidden;">
+<section style="background:linear-gradient(145deg,#0f172a 0%,#1a3a6e 45%,#7f1d1d 100%);padding:4.5rem 0 4rem 0;position:relative;overflow:hidden;">
     <!-- Decorative blobs -->
     <div style="position:absolute;top:-180px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(225,29,72,0.15) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
     <div style="position:absolute;bottom:-200px;left:-120px;width:650px;height:650px;background:radial-gradient(circle,rgba(59,130,246,0.08) 0%,transparent 65%);border-radius:50%;pointer-events:none;"></div>
@@ -11,28 +11,28 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
                 <!-- Badge -->
-                <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);padding:0.5rem 1.2rem;border-radius:50px;font-size:0.8rem;font-weight:700;margin-bottom:2rem;backdrop-filter:blur(12px);letter-spacing:0.5px;">
+                <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);padding:0.5rem 1.2rem;border-radius:50px;font-size:0.8rem;font-weight:700;margin-bottom:1.75rem;backdrop-filter:blur(12px);letter-spacing:0.5px;">
                     <div class="live-dot"></div>
                     <span style="text-transform:uppercase;letter-spacing:1px;">India Needs 5 Crore Units Annually</span>
                 </div>
                 
-                <h1 style="font-size:clamp(2.5rem,5.5vw,4rem);font-weight:900;color:#fff;line-height:1.08;letter-spacing:-2px;margin-bottom:1.5rem;">
+                <h1 style="font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1.5px;margin-bottom:1.25rem;">
                     Donate Blood,<br>
                     <span style="background:linear-gradient(135deg,#fb923c,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Save Lives</span><br>
                     Be a Hero
                 </h1>
-                <p style="font-size:1.05rem;color:rgba(255,255,255,0.78);line-height:1.8;margin-bottom:2.5rem;max-width:480px;font-weight:400;">
-                    LifeDrop connects blood donors with people who need them. Register in minutes, search by blood group and city, and help save a life today.
+                <p style="font-size:1.02rem;color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:2rem;max-width:480px;font-weight:400;">
+                    LifeDrop connects blood donors with people who need them. Register in minutes, get your personalized Digital Donor ID Card, and download your Certificate of Appreciation.
                 </p>
                 <div class="d-flex flex-wrap gap-3 mb-4">
                     <a href="<%= cp %>/registerDonor" class="btn-hero-primary">
                         <i class="fa-solid fa-hand-holding-heart"></i> Become a Donor
                     </a>
-                    <a href="<%= cp %>/searchDonors" class="btn-hero-secondary">
-                        <i class="fa-solid fa-magnifying-glass"></i> Find a Donor
+                    <a href="<%= cp %>/donorLogin" class="btn-hero-secondary">
+                        <i class="fa-solid fa-id-card"></i> My Donor Card
                     </a>
                 </div>
-                <div class="d-flex gap-4">
+                <div class="d-flex flex-wrap gap-4 pt-1">
                     <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;font-weight:600;display:flex;align-items:center;gap:6px;">
                         <i class="fa-solid fa-circle-check" style="color:#22c55e;"></i>Free to Register
                     </span>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="stat-mini" style="margin-top:1.5rem;">
+                        <div class="stat-mini" style="margin-top:1.25rem;">
                             <i class="fa-solid fa-droplet"></i>
                             <h3>8</h3>
                             <small>Blood Types Covered</small>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="stat-mini" style="margin-top:1.5rem;">
+                        <div class="stat-mini" style="margin-top:1.25rem;">
                             <i class="fa-solid fa-hospital"></i>
                             <h3>50+</h3>
                             <small>Partner Hospitals</small>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <!-- Emergency card -->
-                <div style="background:#fff;border-radius:20px;padding:1.35rem 1.5rem;margin-top:1.25rem;box-shadow:0 24px 64px rgba(0,0,0,0.25);display:flex;align-items:center;gap:1rem;">
+                <div style="background:#fff;border-radius:20px;padding:1.35rem 1.5rem;margin-top:1.5rem;box-shadow:0 24px 64px rgba(0,0,0,0.25);display:flex;align-items:center;gap:1rem;">
                     <div style="width:48px;height:48px;background:linear-gradient(135deg,#fff1f2,#ffe4e6);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(225,29,72,0.15);">
                         <i class="fa-solid fa-droplet fa-lg" style="color:#e11d48;"></i>
                     </div>
@@ -93,21 +93,28 @@
     </div>
 </section>
 
-<!-- QUICK SEARCH -->
-<section class="container" style="margin-top:-40px;position:relative;z-index:10;">
-    <div class="card-custom p-4" style="box-shadow:0 16px 48px rgba(0,0,0,0.12);border-radius:20px;">
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="fa-solid fa-bolt" style="color:#f59e0b;font-size:1.1rem;"></i>
-            <h5 class="mb-0 fw-800" style="letter-spacing:-0.3px;">Quick Donor Search</h5>
-            <span style="display:inline-flex;align-items:center;gap:5px;background:#f0fdf4;color:#15803d;font-size:0.68rem;font-weight:800;padding:0.2rem 0.7rem;border-radius:20px;border:1px solid rgba(34,197,94,0.25);text-transform:uppercase;letter-spacing:0.8px;">
-                <div class="live-dot" style="width:6px;height:6px;"></div>LIVE
+<!-- QUICK SEARCH: Clean spacing without negative margin overlap -->
+<section class="container py-4 my-2" style="position:relative;z-index:10;">
+    <div class="card-custom p-4 p-md-5" style="box-shadow:0 16px 48px rgba(0,0,0,0.08);border-radius:24px;border:1px solid rgba(226,232,240,0.9);background:#ffffff;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-2" style="border-bottom:1px solid #f1f5f9;">
+            <div class="d-flex align-items-center gap-2">
+                <div style="width:36px;height:36px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#d97706;">
+                    <i class="fa-solid fa-bolt" style="font-size:1rem;"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-800" style="letter-spacing:-0.3px;color:#0f172a;">Quick Donor Search</h5>
+                    <small class="text-muted">Search directly across verified registered blood donors</small>
+                </div>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;font-size:0.72rem;font-weight:800;padding:0.3rem 0.8rem;border-radius:20px;border:1px solid rgba(34,197,94,0.25);text-transform:uppercase;letter-spacing:0.8px;">
+                <div class="live-dot" style="width:6px;height:6px;"></div>LIVE DIRECTORY
             </span>
         </div>
         <form action="<%= cp %>/searchDonors" method="get">
             <div class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label">Blood Group Needed</label>
-                    <select name="bloodGroup" class="form-select">
+                    <label class="form-label fw-700" style="font-size:0.85rem;color:#334155;">Blood Group Needed</label>
+                    <select name="bloodGroup" class="form-select" style="height:48px;border-radius:12px;">
                         <option value="">Any Blood Group</option>
                         <% for (String g : new String[]{"A+","A-","B+","B-","AB+","AB-","O+","O-"}) { %>
                             <option value="<%= g %>"><%= g %></option>
@@ -115,14 +122,14 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label">City</label>
+                    <label class="form-label fw-700" style="font-size:0.85rem;color:#334155;">City / Location</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
-                        <input type="text" name="city" class="form-control" placeholder="e.g. Mumbai, Delhi, Pune...">
+                        <span class="input-group-text" style="height:48px;border-radius:12px 0 0 12px;background:#f8fafc;"><i class="fa-solid fa-location-dot text-danger"></i></span>
+                        <input type="text" name="city" class="form-control" placeholder="e.g. Mumbai, Delhi, Pune..." style="height:48px;border-radius:0 12px 12px 0;">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn-red w-100" style="justify-content:center;padding:0.72rem;">
+                    <button type="submit" class="btn-red w-100" style="height:48px;justify-content:center;border-radius:12px;font-size:0.92rem;">
                         <i class="fa-solid fa-magnifying-glass"></i> Search Now
                     </button>
                 </div>
@@ -131,8 +138,8 @@
     </div>
 </section>
 
-<!-- BLOOD GROUP BROWSER -->
-<section class="container py-5 mt-2">
+<!-- BLOOD GROUP BROWSER: Ample top breathing space -->
+<section class="container py-5 mt-3">
     <div class="text-center mb-5 fade-up">
         <span class="section-label">Browse by Blood Type</span>
         <h2 class="section-heading mt-3">Find Donors by Blood Group</h2>

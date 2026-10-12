@@ -197,8 +197,50 @@ public class DonorDAO {
     }
 
     /**
+     * Finds a donor by their email address or phone number.
+     * Used for donor login and portal access.
+     */
+    public Donor findByEmailOrPhone(String identifier) throws SQLException {
+        if (identifier == null || identifier.trim().isEmpty()) {
+            return null;
+        }
+        String cleanId = identifier.trim();
+        String sql = "SELECT * FROM donors WHERE LOWER(email) = LOWER(?) OR phone = ? LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cleanId);
+            stmt.setString(2, cleanId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRowToDonor(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Updates only the last donation date for a specific donor.
+     * Used after a donor completes a blood donation to update their record and certificate.
+     */
+    public boolean updateLastDonationDate(int donorId, java.sql.Date lastDonationDate) throws SQLException {
+        String sql = "UPDATE donors SET last_donation_date = ? WHERE donor_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, lastDonationDate);
+            stmt.setInt(2, donorId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    /**
      * Converts one row of a ResultSet into a Donor object.
-     * Kept as a single private helper so all five query methods above
+     * Kept as a single private helper so all query methods above
      * build Donor objects identically - one place to fix if a column
      * is ever added or renamed.
      */

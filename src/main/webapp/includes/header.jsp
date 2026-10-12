@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String adminUsername = (session != null) ? (String) session.getAttribute("adminUsername") : null;
+    Integer donorId = (session != null) ? (Integer) session.getAttribute("donorId") : null;
+    String donorName = (session != null) ? (String) session.getAttribute("donorName") : null;
+    String donorBlood = (session != null) ? (String) session.getAttribute("donorBloodGroup") : null;
     String cp = request.getContextPath();
     String currentPage = request.getRequestURI();
 %>
@@ -32,7 +35,7 @@
             <i class="fa-solid fa-bars" style="font-size:1.1rem;"></i>
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav mx-auto align-items-center gap-1">
+            <ul class="navbar-nav mx-auto align-items-center gap-1 text-center">
                 <li class="nav-item">
                     <a class="nav-link<%= currentPage.contains("index") ? " active" : "" %>" href="<%= cp %>/index.jsp">
                         <i class="fa-solid fa-house me-1" style="font-size:0.8rem;"></i>Home
@@ -53,6 +56,18 @@
                         <i class="fa-solid fa-envelope me-1" style="font-size:0.8rem;"></i>Contact
                     </a>
                 </li>
+                <% if (donorId != null) { %>
+                <li class="nav-item">
+                    <a class="nav-link<%= currentPage.contains("donorCard") ? " active" : "" %>" href="<%= cp %>/donorCard">
+                        <i class="fa-solid fa-id-card me-1 text-red" style="font-size:0.8rem;"></i>My Donor Card
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link<%= currentPage.contains("donorCertificate") ? " active" : "" %>" href="<%= cp %>/donorCertificate">
+                        <i class="fa-solid fa-certificate me-1" style="color:#f59e0b;font-size:0.8rem;"></i>Certificate
+                    </a>
+                </li>
+                <% } %>
                 <% if (adminUsername != null) { %>
                 <li class="nav-item">
                     <a class="nav-link<%= currentPage.contains("admin") ? " active" : "" %>" href="<%= cp %>/adminDashboard">
@@ -61,8 +76,18 @@
                 </li>
                 <% } %>
             </ul>
-            <div class="d-flex align-items-center gap-2 ms-2">
-                <% if (adminUsername != null) { %>
+
+            <!-- Auth Buttons Section: Centered on mobile view, right-aligned on desktop -->
+            <div class="nav-actions-wrap d-flex align-items-center justify-content-center justify-content-lg-end flex-wrap gap-2 mt-3 mt-lg-0 ms-lg-2">
+                <% if (donorId != null) { %>
+                    <a href="<%= cp %>/donorCard" class="donor-nav-pill text-decoration-none">
+                        <span class="blood-badge mini"><%= donorBlood != null ? donorBlood : "ID" %></span>
+                        <span><%= donorName != null ? donorName.split(" ")[0] : "Donor" %></span>
+                    </a>
+                    <a href="<%= cp %>/donorLogout" class="btn btn-outline-secondary btn-sm" style="border-radius:10px;font-size:0.82rem;padding:0.42rem 0.85rem;font-weight:600;" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                    </a>
+                <% } else if (adminUsername != null) { %>
                     <div style="display:flex;align-items:center;gap:8px;background:var(--gray-100);border-radius:50px;padding:0.3rem 0.75rem 0.3rem 0.5rem;border:1px solid var(--gray-200);">
                         <div style="width:28px;height:28px;background:linear-gradient(135deg,#e11d48,#be123c);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                             <i class="fa-solid fa-user text-white" style="font-size:0.7rem;"></i>
@@ -73,11 +98,15 @@
                         <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
                     </a>
                 <% } else { %>
+                    <a href="<%= cp %>/donorLogin" class="btn-donor-nav nav-link">
+                        <i class="fa-solid fa-id-card me-1 text-red"></i>Donor Login
+                    </a>
                     <a href="<%= cp %>/adminLogin" class="btn-admin-nav nav-link">
                         <i class="fa-solid fa-user-shield me-1"></i>Admin Login
                     </a>
                 <% } %>
             </div>
+
         </div>
     </div>
 </nav>

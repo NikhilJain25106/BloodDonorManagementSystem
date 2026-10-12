@@ -135,9 +135,19 @@ public class RegisterDonorServlet extends HttpServlet {
 
             donorDAO.insertDonor(donor);
 
-            // ---- Step 5: Success - redirect (not forward!) to avoid
-            // duplicate form resubmission if the user refreshes the page ----
-            request.setAttribute("successMessage", "Registration successful! Thank you for registering as a donor.");
+            // Fetch newly created record and establish donor session
+            Donor saved = donorDAO.findByEmailOrPhone(donor.getEmail());
+            if (saved != null) {
+                javax.servlet.http.HttpSession session = request.getSession(true);
+                session.setAttribute("donorId", saved.getDonorId());
+                session.setAttribute("donorName", saved.getFullName());
+                session.setAttribute("donorEmail", saved.getEmail());
+                session.setAttribute("donorBloodGroup", saved.getBloodGroup());
+                session.setAttribute("donorUser", saved);
+                request.setAttribute("registeredDonor", saved);
+            }
+
+            request.setAttribute("successMessage", "Registration successful! Your Personalized Donor ID Card and Certificate are now ready.");
             request.getRequestDispatcher("register.jsp").forward(request, response);
 
         } catch (SQLException e) {

@@ -26,7 +26,21 @@
 
             <%-- Success message --%>
             <% if (request.getAttribute("successMessage") != null) { %>
-                <div class="alert alert-success mb-4"><i class="fa-solid fa-circle-check me-2"></i><%= request.getAttribute("successMessage") %></div>
+                <div class="alert alert-success mb-4 p-4" style="border-radius:16px;">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fa-solid fa-circle-check fa-lg"></i>
+                        <h6 class="mb-0 fw-800"><%= request.getAttribute("successMessage") %></h6>
+                    </div>
+                    <p class="mb-3 small">Your registration is complete. You can now view and download your personalized LifeDrop Donor ID Card or your Certificate of Appreciation.</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="<%= cp %>/donorCard" class="btn btn-brand btn-sm" style="font-size:0.85rem;padding:0.5rem 1.2rem;">
+                            <i class="fa-solid fa-id-card me-1"></i>View My Donor ID Card
+                        </a>
+                        <a href="<%= cp %>/donorCertificate" class="btn btn-outline-secondary btn-sm" style="font-size:0.85rem;padding:0.5rem 1.2rem;background:#fff;">
+                            <i class="fa-solid fa-certificate me-1"></i>View Certificate
+                        </a>
+                    </div>
+                </div>
             <% } %>
 
             <%-- Error message --%>
