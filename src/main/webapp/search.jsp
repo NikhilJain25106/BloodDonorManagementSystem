@@ -1,39 +1,67 @@
-﻿<%@ include file="includes/header.jsp" %>
+<%@ include file="includes/header.jsp" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.blooddonor.model.Donor" %>
 
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="container" style="position:relative;z-index:1;">
+        <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="page-hero-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div>
+                <h1 class="page-hero-title">Find Blood Donors</h1>
+                <p class="page-hero-sub">Search by blood group and city to find available donors near you</p>
+            </div>
+        </div>
+        <nav class="breadcrumb-custom">
+            <a href="<%= cp %>/index.jsp"><i class="fa-solid fa-house me-1"></i>Home</a>
+            <span><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+            <span class="current">Search Donors</span>
+        </nav>
+    </div>
+</section>
+
 <div class="container py-5">
-    <h2 class="fw-bold mb-1"><i class="fa-solid fa-magnifying-glass text-danger me-2"></i>Search Donors</h2>
-    <p class="text-muted mb-4">Search by blood group and/or city to find available donors near you.</p>
 
     <%-- Error message --%>
     <% if (request.getAttribute("errorMessage") != null) { %>
-        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i><%= request.getAttribute("errorMessage") %></div>
+        <div class="alert alert-danger mb-4"><i class="fa-solid fa-circle-exclamation me-2"></i><%= request.getAttribute("errorMessage") %></div>
     <% } %>
 
     <%-- Search Form --%>
-    <div class="card app-card p-4 mb-4">
-        <form action="<%= request.getContextPath() %>/searchDonors" method="get" class="row g-3 align-items-end">
-            <div class="col-md-4">
-                <label class="form-label">Blood Group</label>
-                <select name="bloodGroup" class="form-select">
-                    <option value="">Any Blood Group</option>
-                    <% String[] groups = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
-                       String selected = (String) request.getAttribute("selectedBloodGroup");
-                       for (String g : groups) { %>
-                        <option value="<%= g %>" <%= g.equals(selected) ? "selected" : "" %>><%= g %></option>
-                    <% } %>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">City</label>
-                <input type="text" name="city" class="form-control" placeholder="e.g. Mumbai"
-                    value="<%= request.getAttribute("selectedCity") != null ? request.getAttribute("selectedCity") : "" %>">
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-brand w-100">
-                    <i class="fa-solid fa-magnifying-glass me-2"></i>Search
-                </button>
+    <div class="card app-card p-4 mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fa-solid fa-filter" style="color:var(--red);"></i>
+            <h6 class="fw-700 mb-0">Filter Donors</h6>
+        </div>
+        <form action="<%= request.getContextPath() %>/searchDonors" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Blood Group Needed</label>
+                    <select name="bloodGroup" class="form-select">
+                        <option value="">Any Blood Group</option>
+                        <% String[] groups = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
+                           String selected = (String) request.getAttribute("selectedBloodGroup");
+                           for (String g : groups) { %>
+                            <option value="<%= g %>" <%= g.equals(selected) ? "selected" : "" %>><%= g %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">City</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
+                        <input type="text" name="city" class="form-control"
+                            placeholder="e.g. Mumbai, Delhi, Pune..."
+                            value="<%= request.getAttribute("selectedCity") != null ? request.getAttribute("selectedCity") : "" %>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-brand w-100" style="padding:0.7rem;justify-content:center;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search Now
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -42,36 +70,94 @@
     <% if (Boolean.TRUE.equals(request.getAttribute("searchPerformed"))) {
         List<Donor> results = (List<Donor>) request.getAttribute("results");
         if (results == null || results.isEmpty()) { %>
-            <div class="alert alert-info">
-                <i class="fa-solid fa-circle-info me-2"></i>No donors found matching your search. Try a different blood group or city.
+            <div class="text-center py-5">
+                <div style="width:80px;height:80px;background:var(--red-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+                    <i class="fa-solid fa-circle-xmark fa-2x" style="color:var(--red);"></i>
+                </div>
+                <h5 class="fw-700 mb-1" style="color:var(--navy);">No Donors Found</h5>
+                <p class="text-muted" style="font-size:0.9rem;max-width:360px;margin:0 auto;">Try a different blood group or city. You can also leave city blank to search all locations.</p>
             </div>
         <% } else { %>
-            <p class="text-muted mb-3">Found <strong><%= results.size() %></strong> donor(s).</p>
+            <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                <span class="result-count-badge">
+                    <i class="fa-solid fa-users"></i> <%= results.size() %> Donor<%= results.size() != 1 ? "s" : "" %> Found
+                </span>
+                <span style="font-size:0.8rem;color:var(--gray-500);">Contact donors directly — details shown below</span>
+            </div>
             <div class="row g-3">
                 <% for (Donor donor : results) { %>
                 <div class="col-md-6 col-lg-4">
-                    <div class="card app-card h-100 p-3">
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="blood-badge me-3"><%= donor.getBloodGroup() %></span>
+                    <div class="donor-result-card h-100">
+
+                        <!-- Header row: blood badge + name -->
+                        <div class="d-flex align-items-start gap-3 mb-3">
                             <div>
-                                <h6 class="mb-0 fw-bold"><%= donor.getFullName() %></h6>
+                                <span class="blood-badge" style="font-size:1.1rem;min-width:60px;height:44px;">
+                                    <%= donor.getBloodGroup() %>
+                                </span>
+                            </div>
+                            <div style="flex:1;min-width:0;">
+                                <h6 class="fw-700 mb-0" style="color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <%= donor.getFullName() %>
+                                </h6>
                                 <small class="text-muted"><%= donor.getGender() %>, Age <%= donor.getAge() %></small>
                             </div>
+                            <span style="display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#059669;font-size:0.7rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:50px;white-space:nowrap;flex-shrink:0;">
+                                <i class="fa-solid fa-circle" style="font-size:0.45rem;"></i>Available
+                            </span>
                         </div>
-                        <p class="mb-1"><i class="fa-solid fa-location-dot text-danger me-2"></i><%= donor.getCity() %></p>
-                        <% if (donor.getLastDonationDate() != null) { %>
-                            <p class="mb-0 small text-muted">
-                                <i class="fa-solid fa-calendar me-1"></i>Last donated: <%= donor.getLastDonationDate() %>
-                            </p>
-                        <% } else { %>
-                            <p class="mb-0 small text-muted"><i class="fa-solid fa-calendar me-1"></i>No previous donation</p>
-                        <% } %>
+
+                        <!-- Details -->
+                        <div class="d-flex flex-column gap-2" style="font-size:0.84rem;">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-location-dot" style="color:var(--red);width:16px;text-align:center;"></i>
+                                <span style="color:#374151;"><%= donor.getCity() %></span>
+                            </div>
+                            <% if (donor.getLastDonationDate() != null) { %>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-calendar-check" style="color:#3b82f6;width:16px;text-align:center;"></i>
+                                <span class="text-muted">Last donated: <strong style="color:#374151;"><%= donor.getLastDonationDate() %></strong></span>
+                            </div>
+                            <% } else { %>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-calendar" style="color:#9ca3af;width:16px;text-align:center;"></i>
+                                <span class="text-muted">First-time donor</span>
+                            </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Contact CTA -->
+                        <div class="mt-3 pt-3" style="border-top:1px solid #f3f4f6;">
+                            <a href="<%= cp %>/contact.jsp" class="btn-outline-red w-100" style="justify-content:center;font-size:0.82rem;padding:0.5rem 1rem;">
+                                <i class="fa-solid fa-phone-volume"></i> Contact for Donation
+                            </a>
+                        </div>
+
                     </div>
                 </div>
                 <% } %>
             </div>
         <% } %>
+    <% } else { %>
+        <!-- Landing state: blood group shortcuts -->
+        <div class="text-center mb-5">
+            <span class="section-label">Quick Access</span>
+            <h2 class="section-heading mt-2 mb-2">Browse by Blood Type</h2>
+            <p class="text-muted" style="font-size:0.9rem;">Click any blood group to instantly find available donors</p>
+        </div>
+        <div class="row g-3 justify-content-center">
+            <% String[] bgroups = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
+               for (String bg : bgroups) { %>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                <a href="<%= cp %>/searchDonors?bloodGroup=<%= bg %>" class="blood-group-card">
+                    <div class="blood-type"><%= bg %></div>
+                    <div class="find-text"><i class="fa-solid fa-magnifying-glass me-1"></i>Find Donors</div>
+                </a>
+            </div>
+            <% } %>
+        </div>
     <% } %>
+
 </div>
 
 <%@ include file="includes/footer.jsp" %>

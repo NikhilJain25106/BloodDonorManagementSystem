@@ -1,72 +1,143 @@
-﻿<%@ include file="includes/header.jsp" %>
+<%@ include file="includes/header.jsp" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.blooddonor.model.Donor" %>
 
-<div class="container-fluid py-4 px-4">
+<%
+    List<Donor> donors = (List<Donor>) request.getAttribute("donors");
+    int total = (donors != null) ? donors.size() : 0;
 
-    <%-- Header row --%>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-0"><i class="fa-solid fa-gauge text-danger me-2"></i>Admin Dashboard</h2>
-            <p class="text-muted mb-0">Welcome, <%= session.getAttribute("adminFullName") %></p>
+    // Count by gender
+    int male = 0, female = 0, other = 0;
+    if (donors != null) {
+        for (Donor donor : donors) {
+            if ("Male".equals(donor.getGender()))        male++;
+            else if ("Female".equals(donor.getGender())) female++;
+            else                                          other++;
+        }
+    }
+%>
+
+<!-- PAGE HERO -->
+<section class="page-hero" style="background:linear-gradient(135deg,#1e3a5f 0%,#1a3355 100%);">
+    <div class="container" style="position:relative;z-index:1;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="page-hero-icon">
+                    <i class="fa-solid fa-gauge"></i>
+                </div>
+                <div>
+                    <h1 class="page-hero-title">Admin Dashboard</h1>
+                    <p class="page-hero-sub">Welcome back, <strong style="color:#fff;"><%= session.getAttribute("adminFullName") %></strong></p>
+                </div>
+            </div>
+            <a href="<%= request.getContextPath() %>/adminLogout"
+               class="btn btn-outline-secondary btn-sm"
+               style="border-radius:10px;font-weight:600;color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);font-size:0.85rem;padding:0.5rem 1.1rem;">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+            </a>
         </div>
-        <a href="<%= request.getContextPath() %>/adminLogout" class="btn btn-outline-danger">
-            <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
-        </a>
     </div>
+</section>
+
+<div class="container-fluid py-4 px-4">
 
     <%-- Error message --%>
     <% if (request.getAttribute("errorMessage") != null) { %>
-        <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation me-2"></i><%= request.getAttribute("errorMessage") %></div>
+        <div class="alert alert-danger mb-4"><i class="fa-solid fa-circle-exclamation me-2"></i><%= request.getAttribute("errorMessage") %></div>
     <% } %>
 
-    <%-- Stats row --%>
-    <%
-        List<Donor> donors = (List<Donor>) request.getAttribute("donors");
-        int total = (donors != null) ? donors.size() : 0;
-    %>
+    <!-- Stat Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card app-card p-3 text-center">
-                <i class="fa-solid fa-users fa-2x text-danger mb-2"></i>
-                <h3 class="fw-bold mb-0"><%= total %></h3>
-                <small class="text-muted">Total Donors</small>
+        <div class="col-6 col-lg-3">
+            <div class="admin-stat-card red">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="admin-stat-number"><%= total %></div>
+                        <div class="admin-stat-label">Total Donors</div>
+                    </div>
+                    <div class="admin-stat-icon red"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <a href="<%= request.getContextPath() %>/registerDonor" class="btn btn-brand" style="font-size:0.78rem;padding:0.4rem 0.9rem;gap:6px;">
+                    <i class="fa-solid fa-plus"></i>Add New
+                </a>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card app-card p-3 text-center">
-                <i class="fa-solid fa-droplet fa-2x text-danger mb-2"></i>
-                <h3 class="fw-bold mb-0">8</h3>
-                <small class="text-muted">Blood Groups</small>
+        <div class="col-6 col-lg-3">
+            <div class="admin-stat-card blue">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="admin-stat-number">8</div>
+                        <div class="admin-stat-label">Blood Groups</div>
+                    </div>
+                    <div class="admin-stat-icon blue"><i class="fa-solid fa-droplet"></i></div>
+                </div>
+                <a href="<%= request.getContextPath() %>/searchDonors" class="btn btn-outline-secondary" style="font-size:0.78rem;padding:0.4rem 0.9rem;border-radius:8px;font-weight:600;">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i>Search
+                </a>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card app-card p-3 text-center">
-                <i class="fa-solid fa-user-plus fa-2x text-danger mb-2"></i>
-                <a href="<%= request.getContextPath() %>/registerDonor" class="btn btn-brand btn-sm mt-2">Add Donor</a>
+        <div class="col-6 col-lg-3">
+            <div class="admin-stat-card green">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="admin-stat-number"><%= male %></div>
+                        <div class="admin-stat-label">Male Donors</div>
+                    </div>
+                    <div class="admin-stat-icon green"><i class="fa-solid fa-person"></i></div>
+                </div>
+                <span style="font-size:0.78rem;color:var(--gray-500);">
+                    <%= total > 0 ? Math.round(male * 100.0 / total) : 0 %>% of total
+                </span>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card app-card p-3 text-center">
-                <i class="fa-solid fa-magnifying-glass fa-2x text-danger mb-2"></i>
-                <a href="<%= request.getContextPath() %>/searchDonors" class="btn btn-outline-danger btn-sm mt-2">Search Donors</a>
+        <div class="col-6 col-lg-3">
+            <div class="admin-stat-card amber">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="admin-stat-number"><%= female %></div>
+                        <div class="admin-stat-label">Female Donors</div>
+                    </div>
+                    <div class="admin-stat-icon amber"><i class="fa-solid fa-person-dress"></i></div>
+                </div>
+                <span style="font-size:0.78rem;color:var(--gray-500);">
+                    <%= total > 0 ? Math.round(female * 100.0 / total) : 0 %>% of total
+                </span>
             </div>
         </div>
     </div>
 
-    <%-- Donor Table --%>
-    <div class="card app-card">
-        <div class="card-header bg-white py-3">
-            <h5 class="mb-0 fw-bold">All Registered Donors</h5>
+    <!-- Donor Table -->
+    <div class="card app-card overflow-hidden">
+        <!-- Table header with search -->
+        <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-3" style="border-bottom:1px solid #f3f4f6;">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-table-list" style="color:var(--red);"></i>
+                <h5 class="mb-0 fw-700">All Registered Donors</h5>
+                <span class="result-count-badge ms-1"><%= total %></span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <div class="input-group" style="width:220px;">
+                    <span class="input-group-text" style="border-radius:10px 0 0 10px;padding:0.45rem 0.75rem;">
+                        <i class="fa-solid fa-search" style="font-size:0.8rem;"></i>
+                    </span>
+                    <input type="text" id="tableSearch" class="form-control" placeholder="Filter table..."
+                        style="border-radius:0 10px 10px 0;font-size:0.85rem;padding:0.45rem 0.75rem;"
+                        oninput="filterTable(this.value)">
+                </div>
+                <a href="<%= request.getContextPath() %>/registerDonor" class="btn btn-brand" style="white-space:nowrap;padding:0.5rem 1rem;font-size:0.85rem;gap:6px;">
+                    <i class="fa-solid fa-plus"></i>Add Donor
+                </a>
+            </div>
         </div>
+
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover mb-0" id="donorTable">
+                    <thead>
                         <tr>
-                            <th>#</th>
+                            <th style="width:40px;">#</th>
                             <th>Name</th>
-                            <th>Blood Group</th>
+                            <th>Blood</th>
                             <th>Age</th>
                             <th>Gender</th>
                             <th>Phone</th>
@@ -74,40 +145,58 @@
                             <th>City</th>
                             <th>Last Donation</th>
                             <th>Registered</th>
-                            <th>Actions</th>
+                            <th style="width:80px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% if (donors == null || donors.isEmpty()) { %>
                             <tr>
-                                <td colspan="11" class="text-center py-4 text-muted">
-                                    <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>No donors registered yet.
+                                <td colspan="11" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block" style="opacity:0.3;"></i>
+                                    <p class="mb-1 fw-600">No donors registered yet</p>
+                                    <a href="<%= request.getContextPath() %>/registerDonor" class="btn btn-brand btn-sm mt-1">
+                                        <i class="fa-solid fa-plus me-1"></i>Add First Donor
+                                    </a>
                                 </td>
                             </tr>
                         <% } else {
-                            int i = 1;
-                            for (Donor donor : donors) { %>
+                               int i = 1;
+                               for (Donor donor : donors) { %>
                             <tr>
-                                <td><%= i++ %></td>
-                                <td class="fw-semibold"><%= donor.getFullName() %></td>
+                                <td class="text-muted" style="font-size:0.8rem;"><%= i++ %></td>
+                                <td>
+                                    <div class="fw-600" style="color:var(--navy);"><%= donor.getFullName() %></div>
+                                </td>
                                 <td><span class="blood-badge"><%= donor.getBloodGroup() %></span></td>
                                 <td><%= donor.getAge() %></td>
-                                <td><%= donor.getGender() %></td>
-                                <td><%= donor.getPhone() %></td>
-                                <td><%= donor.getEmail() %></td>
-                                <td><%= donor.getCity() %></td>
-                                <td><%= donor.getLastDonationDate() != null ? donor.getLastDonationDate() : "-" %></td>
-                                <td><small><%= donor.getCreatedAt() %></small></td>
                                 <td>
-                                    <a href="<%= request.getContextPath() %>/editDonor?id=<%= donor.getDonorId() %>"
-                                       class="btn btn-sm btn-outline-primary me-1">
-                                        <i class="fa-solid fa-pen"></i>
-                                    </a>
-                                    <a href="<%= request.getContextPath() %>/deleteDonor?id=<%= donor.getDonorId() %>"
-                                       class="btn btn-sm btn-outline-danger"
-                                       onclick="return confirm('Delete <%= donor.getFullName() %>? This cannot be undone.')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    <span style="font-size:0.8rem;background:#f3f4f6;padding:0.2rem 0.55rem;border-radius:6px;font-weight:500;">
+                                        <%= donor.getGender() %>
+                                    </span>
+                                </td>
+                                <td><a href="tel:<%= donor.getPhone() %>" style="color:inherit;text-decoration:none;"><%= donor.getPhone() %></a></td>
+                                <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    <a href="mailto:<%= donor.getEmail() %>" style="color:inherit;text-decoration:none;font-size:0.83rem;"><%= donor.getEmail() %></a>
+                                </td>
+                                <td><%= donor.getCity() %></td>
+                                <td>
+                                    <%= donor.getLastDonationDate() != null
+                                        ? "<span style='color:#374151;font-size:0.83rem;'>" + donor.getLastDonationDate() + "</span>"
+                                        : "<span style='color:#9ca3af;font-size:0.8rem;'>—</span>" %>
+                                </td>
+                                <td><small style="color:var(--gray-500);font-size:0.78rem;"><%= donor.getCreatedAt() %></small></td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="<%= request.getContextPath() %>/editDonor?id=<%= donor.getDonorId() %>"
+                                           class="action-btn edit" title="Edit donor">
+                                            <i class="fa-solid fa-pen" style="font-size:0.75rem;"></i>
+                                        </a>
+                                        <a href="<%= request.getContextPath() %>/deleteDonor?id=<%= donor.getDonorId() %>"
+                                           class="action-btn delete" title="Delete donor"
+                                           onclick="return confirm('Delete <%= donor.getFullName() %>? This cannot be undone.')">
+                                            <i class="fa-solid fa-trash" style="font-size:0.75rem;"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         <% } } %>
@@ -116,6 +205,17 @@
             </div>
         </div>
     </div>
+
 </div>
+
+<script>
+function filterTable(query) {
+    const rows = document.querySelectorAll('#donorTable tbody tr');
+    const q = query.toLowerCase();
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
 
 <%@ include file="includes/footer.jsp" %>
