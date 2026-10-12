@@ -21,3 +21,6 @@ desktop.ini
 
 # Local shell wrapper
 powershell.cmd
+
+# Tomcat temporary work folders
+tomcat.*/
