@@ -26,4 +26,4 @@ Disallow: /deleteDonor
 Disallow: /WEB-INF/
 
 # Sitemap location
-Sitemap: https://blooddonormanagementsystem-production.up.railway.app/sitemap.xml
+Sitemap: https://lifedrop-app.up.railway.app/sitemap.xml
