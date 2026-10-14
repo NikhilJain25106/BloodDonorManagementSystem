@@ -32,6 +32,8 @@
                     <a href="registerDonor" class="footer-link"><i class="fa-solid fa-user-plus" style="width:14px;"></i>Register</a>
                     <a href="searchDonors" class="footer-link"><i class="fa-solid fa-magnifying-glass" style="width:14px;"></i>Search</a>
                     <a href="contact.jsp" class="footer-link"><i class="fa-solid fa-envelope" style="width:14px;"></i>Contact</a>
+                    <a href="privacy.jsp" class="footer-link"><i class="fa-solid fa-shield-halved" style="width:14px;"></i>Privacy</a>
+                    <a href="terms.jsp" class="footer-link"><i class="fa-solid fa-file-contract" style="width:14px;"></i>Terms</a>
                     <a href="adminLogin" class="footer-link"><i class="fa-solid fa-user-shield" style="width:14px;"></i>Admin</a>
                 </div>
             </div>

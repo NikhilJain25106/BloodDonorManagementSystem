@@ -1,0 +1,29 @@
+# Robots.txt for LifeDrop - Blood Donor Management System
+User-agent: *
+Allow: /
+Allow: /index.jsp
+Allow: /register.jsp
+Allow: /registerDonor
+Allow: /search.jsp
+Allow: /searchDonors
+Allow: /contact.jsp
+Allow: /privacy.jsp
+Allow: /terms.jsp
+Allow: /assets/
+
+# Disallow private user and admin dashboards
+Disallow: /adminDashboard
+Disallow: /admin-dashboard.jsp
+Disallow: /adminLogin
+Disallow: /admin-login.jsp
+Disallow: /editDonor
+Disallow: /edit-donor.jsp
+Disallow: /donorCard
+Disallow: /donor-card.jsp
+Disallow: /donorCertificate
+Disallow: /donor-certificate.jsp
+Disallow: /deleteDonor
+Disallow: /WEB-INF/
+
+# Sitemap location
+Sitemap: https://blooddonormanagementsystem-production.up.railway.app/sitemap.xml

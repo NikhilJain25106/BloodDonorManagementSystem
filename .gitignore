@@ -22,5 +22,10 @@ desktop.ini
 # Local shell wrapper
 powershell.cmd
 
+# Environment and secret files
+.env
+.env.*
+!.env.example
+
 # Tomcat temporary work folders
 tomcat.*/

@@ -13,6 +13,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="LifeDrop - India's Blood Donor Management System. Find blood donors near you or register as a donor to save lives.">
+    <meta name="theme-color" content="#e11d48">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LifeDrop &mdash; Blood Donor Management System">
+    <meta property="og:description" content="Find voluntary blood donors instantly or register to save lives in emergencies.">
+    <meta property="og:image" content="<%= cp %>/assets/images/favicon.svg">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="LifeDrop &mdash; Blood Donor Management System">
+    <meta name="twitter:description" content="Connecting blood donors with patients and hospitals in real time.">
+
+    <!-- Favicon & PWA Icons -->
+    <link rel="icon" type="image/svg+xml" href="<%= cp %>/assets/images/favicon.svg">
+    <link rel="manifest" href="<%= cp %>/site.webmanifest">
+
     <title>LifeDrop &mdash; Blood Donor Management System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
