@@ -121,6 +121,12 @@ Built strictly with clean, foundational Java EE standards (**Java Servlets 4.0**
 ### Admin Management Dashboard
 ![Admin Dashboard](screenshots/dashboard.png)
 
+### Personalized Digital Donor ID Card
+![Donor Card](screenshots/donor-card.png)
+
+### Official Certificate of Appreciation
+![Donor Certificate](screenshots/donor-certificate.png)
+
 </div>
 
 ---
