@@ -183,13 +183,13 @@ flowchart TD
 |:---|:---|:---|
 | **Language** | Java Development Kit (OpenJDK) | Java 17 LTS |
 | **Web Framework** | Java Servlets & JavaServer Pages | Servlet 4.0 / JSP 2.3 / JSTL 1.2 |
-| **Servlet Container** | Apache Tomcat (Embedded) | Tomcat 9.0.82 |
+| **Servlet Container** | Apache Tomcat (Embedded) | Tomcat 9.0.98 |
 | **Database** | MySQL Server | MySQL 8.0+ |
-| **Database Access** | Java Database Connectivity (JDBC) | MySQL Connector/J 8.3.0 |
+| **Database Access** | Java Database Connectivity (JDBC) | MySQL Connector/J 9.2.0 |
 | **Security & Hashing** | jBCrypt | 0.4 (Blowfish-based adaptive hashing) |
-| **Frontend Styling** | Vanilla CSS + Bootstrap + FontAwesome | Bootstrap 5.3.2, Font Awesome 6.5.1 |
+| **Frontend Styling** | Vanilla CSS + Bootstrap + FontAwesome | Bootstrap 5.3.3, Font Awesome 6.7.2 |
 | **Build System** | Apache Maven & Maven Shade Plugin | Maven 3.9+ (Produces Standalone Fat JAR) |
-| **Testing** | JUnit 5 Jupiter | 5.10.2 |
+| **Testing** | JUnit 5 Jupiter | 5.11.4 |
 | **CI / CD** | GitHub Actions | Automated build and test workflow |
 | **Cloud Hosting** | Railway Cloud PaaS | Nixpacks builder with managed MySQL |
 
