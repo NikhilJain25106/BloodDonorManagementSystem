@@ -28,13 +28,13 @@
             <div class="col-lg-2 col-6">
                 <h6 class="text-white fw-700 mb-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;">Navigation</h6>
                 <div class="d-flex flex-column">
-                    <a href="index.jsp" class="footer-link"><i class="fa-solid fa-house" style="width:14px;"></i>Home</a>
-                    <a href="registerDonor" class="footer-link"><i class="fa-solid fa-user-plus" style="width:14px;"></i>Register</a>
-                    <a href="searchDonors" class="footer-link"><i class="fa-solid fa-magnifying-glass" style="width:14px;"></i>Search</a>
-                    <a href="contact.jsp" class="footer-link"><i class="fa-solid fa-envelope" style="width:14px;"></i>Contact</a>
-                    <a href="privacy.jsp" class="footer-link"><i class="fa-solid fa-shield-halved" style="width:14px;"></i>Privacy</a>
-                    <a href="terms.jsp" class="footer-link"><i class="fa-solid fa-file-contract" style="width:14px;"></i>Terms</a>
-                    <a href="adminLogin" class="footer-link"><i class="fa-solid fa-user-shield" style="width:14px;"></i>Admin</a>
+                    <a href="<%= cp %>/index.jsp" class="footer-link"><i class="fa-solid fa-house" style="width:14px;"></i>Home</a>
+                    <a href="<%= cp %>/registerDonor" class="footer-link"><i class="fa-solid fa-user-plus" style="width:14px;"></i>Register</a>
+                    <a href="<%= cp %>/searchDonors" class="footer-link"><i class="fa-solid fa-magnifying-glass" style="width:14px;"></i>Search</a>
+                    <a href="<%= cp %>/contact.jsp" class="footer-link"><i class="fa-solid fa-envelope" style="width:14px;"></i>Contact</a>
+                    <a href="<%= cp %>/privacy.jsp" class="footer-link"><i class="fa-solid fa-shield-halved" style="width:14px;"></i>Privacy</a>
+                    <a href="<%= cp %>/terms.jsp" class="footer-link"><i class="fa-solid fa-file-contract" style="width:14px;"></i>Terms</a>
+                    <a href="<%= cp %>/adminLogin" class="footer-link"><i class="fa-solid fa-user-shield" style="width:14px;"></i>Admin</a>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -42,7 +42,7 @@
                 <div class="d-flex flex-wrap gap-2">
                     <% String[] bgs = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
                        for (String bg : bgs) { %>
-                        <a href="searchDonors?bloodGroup=<%= bg %>" class="blood-badge" style="font-size:0.72rem;height:28px;min-width:38px;text-decoration:none;""><%= bg %></a>
+                        <a href="<%= cp %>/searchDonors?bloodGroup=<%= bg %>" class="blood-badge" style="font-size:0.72rem;height:28px;min-width:38px;text-decoration:none;"><%= bg %></a>
                     <% } %>
                 </div>
             </div>
