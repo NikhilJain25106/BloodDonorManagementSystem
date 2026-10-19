@@ -2,12 +2,14 @@
 target/
 
 # VS Code settings
-.vscode/
+.vscode/*
+!.vscode/settings.json
 
 # Windows system files
 Thumbs.db
 desktop.ini
 *.lnk
+Untitled*
 
 # IDE files
 *.iml
