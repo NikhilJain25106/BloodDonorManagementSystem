@@ -92,6 +92,21 @@
                     </div>
                 </div>
 
+                <div class="text-end mb-3">
+                    <a href="<%= request.getContextPath() %>/resetPassword" class="text-muted small text-decoration-none">
+                        <i class="fa-solid fa-key me-1"></i>Forgot password?
+                    </a>
+                </div>
+
+                <% if (Boolean.TRUE.equals(request.getAttribute("requiresCaptcha"))) { %>
+                <div class="mb-4 p-3" style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;">
+                    <label class="form-label fw-bold text-danger small">
+                        <i class="fa-solid fa-shield-halved me-1"></i>Security Verification: <%= request.getAttribute("captchaChallenge") %>
+                    </label>
+                    <input type="text" name="captchaAnswer" class="form-control" placeholder="Enter answer" required autocomplete="off">
+                </div>
+                <% } %>
+
                 <button type="submit" class="btn btn-brand w-100 btn-lg" style="justify-content:center;">
                     <i class="fa-solid fa-right-to-bracket"></i> Sign In
                 </button>

@@ -44,6 +44,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Accessibility Focus Ring (Keyboard Navigation Friendly) */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--red) !important;
+    outline-offset: 2px !important;
+}
+
 /* ===== NAVBAR ===== */
 .app-navbar {
     background: rgba(255,255,255,0.92) !important;

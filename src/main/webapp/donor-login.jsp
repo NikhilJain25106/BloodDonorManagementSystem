@@ -33,10 +33,20 @@
                                 value="<%= request.getAttribute("enteredIdentifier") != null ? request.getAttribute("enteredIdentifier") : "" %>"
                                 style="border-radius:0 12px 12px 0;height:48px;" required autofocus>
                         </div>
-                        <div class="form-text" style="font-size:0.75rem;color:var(--gray-500);margin-top:0.4rem;">
-                            <i class="fa-solid fa-shield-halved me-1 text-success"></i>Instant verification using your registered credentials
+                        <div class="form-text d-flex justify-content-between align-items-center" style="font-size:0.75rem;color:var(--gray-500);margin-top:0.4rem;">
+                            <span><i class="fa-solid fa-shield-halved me-1 text-success"></i>Instant credential verification</span>
+                            <a href="<%= cp %>/resetPassword" class="text-muted text-decoration-none"><i class="fa-solid fa-key me-1"></i>Forgot password?</a>
                         </div>
                     </div>
+
+                    <% if (Boolean.TRUE.equals(request.getAttribute("requiresCaptcha"))) { %>
+                    <div class="mb-4 p-3" style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;">
+                        <label class="form-label fw-bold text-danger small">
+                            <i class="fa-solid fa-shield-halved me-1"></i>Security Verification: <%= request.getAttribute("captchaChallenge") %>
+                        </label>
+                        <input type="text" name="captchaAnswer" class="form-control" placeholder="Enter answer" required autocomplete="off">
+                    </div>
+                    <% } %>
 
                     <button type="submit" class="btn btn-brand w-100 btn-lg" style="height:48px;border-radius:12px;font-size:0.95rem;justify-content:center;">
                         <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>Login to Donor Portal

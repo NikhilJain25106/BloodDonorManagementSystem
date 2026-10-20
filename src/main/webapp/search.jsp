@@ -58,8 +58,8 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-brand w-100" style="padding:0.7rem;justify-content:center;">
-                        <i class="fa-solid fa-magnifying-glass"></i> Search Now
+                    <button type="submit" class="btn btn-brand w-100" style="padding:0.7rem;justify-content:center;" aria-label="Search registered blood donors">
+                        <i class="fa-solid fa-magnifying-glass me-1" aria-hidden="true"></i> Search Donors
                     </button>
                 </div>
             </div>

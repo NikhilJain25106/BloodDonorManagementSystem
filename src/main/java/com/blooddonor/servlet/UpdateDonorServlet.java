@@ -61,14 +61,14 @@ public class UpdateDonorServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String idParam = request.getParameter("donorId");
-        String fullName = request.getParameter("fullName");
+        String fullName = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("fullName"), 100);
         String ageStr = request.getParameter("age");
-        String gender = request.getParameter("gender");
-        String bloodGroup = request.getParameter("bloodGroup");
+        String gender = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("gender"), 20);
+        String bloodGroup = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("bloodGroup"), 10);
         String phone = request.getParameter("phone");
         String email = request.getParameter("email");
-        String address = request.getParameter("address");
-        String city = request.getParameter("city");
+        String address = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("address"), 255);
+        String city = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("city"), 100);
         String lastDonationStr = request.getParameter("lastDonationDate");
 
         StringBuilder errors = new StringBuilder();
@@ -86,19 +86,24 @@ public class UpdateDonorServlet extends HttpServlet {
             errors.append("Full name is required. ");
 
         try {
-            age = Integer.parseInt(ageStr);
+            age = Integer.parseInt(ageStr.trim());
             if (age < 18 || age > 65)
                 errors.append("Age must be between 18 and 65. ");
         } catch (NumberFormatException e) {
             errors.append("Age must be a valid number. ");
         }
 
-        if (isBlank(phone) || !phone.matches("\\d{10}")) {
+        if (isBlank(phone) || !phone.trim().matches("\\d{10}")) {
             errors.append("Phone number must be exactly 10 digits. ");
         }
-        if (isBlank(email) || !email.matches("^[\\w.+-]+@([\\w-]+\\.)+[a-zA-Z]{2,}$")) {
+
+        String sanitizedEmail = null;
+        try {
+            sanitizedEmail = com.blooddonor.security.AuthInputValidator.validateAndSanitizeEmail(email);
+        } catch (IllegalArgumentException e) {
             errors.append("A valid email address is required. ");
         }
+
         if (isBlank(address))
             errors.append("Address is required. ");
         if (isBlank(city))
@@ -111,8 +116,8 @@ public class UpdateDonorServlet extends HttpServlet {
             donor.setAge(age);
             donor.setGender(gender);
             donor.setBloodGroup(bloodGroup);
-            donor.setPhone(phone);
-            donor.setEmail(email);
+            donor.setPhone(phone != null ? phone.trim() : "");
+            donor.setEmail(sanitizedEmail != null ? sanitizedEmail : (email != null ? email.trim() : ""));
             donor.setAddress(address);
             donor.setCity(city);
 

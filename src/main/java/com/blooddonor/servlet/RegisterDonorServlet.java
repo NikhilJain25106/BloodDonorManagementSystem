@@ -38,21 +38,18 @@ public class RegisterDonorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // ---- Step 1: Read raw form fields ----
-        String fullName = request.getParameter("fullName");
+        // ---- Step 1: Read and sanitize raw form fields ----
+        String fullName = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("fullName"), 100);
         String ageStr = request.getParameter("age");
-        String gender = request.getParameter("gender");
-        String bloodGroup = request.getParameter("bloodGroup");
+        String gender = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("gender"), 20);
+        String bloodGroup = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("bloodGroup"), 10);
         String phone = request.getParameter("phone");
         String email = request.getParameter("email");
-        String address = request.getParameter("address");
-        String city = request.getParameter("city");
+        String address = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("address"), 255);
+        String city = com.blooddonor.security.AuthInputValidator.sanitizeFreeText(request.getParameter("city"), 100);
         String lastDonationStr = request.getParameter("lastDonationDate"); // may be empty
 
         // ---- Step 2: Server-side validation ----
-        // We collect ALL problems first rather than stopping at the first
-        // one, so the user sees every issue at once instead of fixing
-        // errors one at a time across multiple submissions.
         StringBuilder errors = new StringBuilder();
 
         if (isBlank(fullName)) {
@@ -64,7 +61,7 @@ public class RegisterDonorServlet extends HttpServlet {
             errors.append("Age is required. ");
         } else {
             try {
-                age = Integer.parseInt(ageStr);
+                age = Integer.parseInt(ageStr.trim());
                 if (age < 18 || age > 65) {
                     errors.append("Age must be between 18 and 65 to donate. ");
                 }
@@ -81,11 +78,14 @@ public class RegisterDonorServlet extends HttpServlet {
             errors.append("Blood group is required. ");
         }
 
-        if (isBlank(phone) || !phone.matches("\\d{10}")) {
+        if (isBlank(phone) || !phone.trim().matches("\\d{10}")) {
             errors.append("Phone number must be exactly 10 digits. ");
         }
 
-        if (isBlank(email) || !email.matches("^[\\w.+-]+@([\\w-]+\\.)+[a-zA-Z]{2,}$")) {
+        String sanitizedEmail = null;
+        try {
+            sanitizedEmail = com.blooddonor.security.AuthInputValidator.validateAndSanitizeEmail(email);
+        } catch (IllegalArgumentException e) {
             errors.append("A valid email address is required. ");
         }
 
@@ -97,9 +97,17 @@ public class RegisterDonorServlet extends HttpServlet {
             errors.append("City is required. ");
         }
 
-        // If any validation failed, stop here and re-show the form with
-        // the error message and the values the user already typed, so
-        // they don't have to retype everything from scratch.
+        // Server-side enforcement of statutory DPDP consent and voluntary declaration
+        String consentDpdp = request.getParameter("consentDpdp");
+        String consentTerms = request.getParameter("consentTerms");
+        if (isBlank(consentDpdp) || !"true".equalsIgnoreCase(consentDpdp.trim())) {
+            errors.append("You must provide consent under the DPDP Act 2023 to register as a donor. ");
+        }
+        if (isBlank(consentTerms) || !"true".equalsIgnoreCase(consentTerms.trim())) {
+            errors.append("You must agree to the Terms & Conditions and voluntary donation declaration. ");
+        }
+
+        // If any validation failed, stop here and re-show the form
         if (errors.length() > 0) {
             request.setAttribute("errorMessage", errors.toString());
             request.setAttribute("donor", buildDonorFromRequest(request)); // to repopulate form
@@ -109,7 +117,7 @@ public class RegisterDonorServlet extends HttpServlet {
 
         // ---- Step 3: Duplicate check ----
         try {
-            if (donorDAO.isDuplicateDonor(phone, email)) {
+            if (donorDAO.isDuplicateDonor(phone.trim(), sanitizedEmail)) {
                 request.setAttribute("errorMessage",
                         "A donor with this phone number or email is already registered.");
                 request.setAttribute("donor", buildDonorFromRequest(request));
@@ -119,18 +127,17 @@ public class RegisterDonorServlet extends HttpServlet {
 
             // ---- Step 4: Build the Donor object and insert ----
             Donor donor = new Donor();
-            donor.setFullName(fullName.trim());
+            donor.setFullName(fullName);
             donor.setAge(age);
             donor.setGender(gender);
             donor.setBloodGroup(bloodGroup);
             donor.setPhone(phone.trim());
-            donor.setEmail(email.trim());
-            donor.setAddress(address.trim());
-            donor.setCity(city.trim());
+            donor.setEmail(sanitizedEmail);
+            donor.setAddress(address);
+            donor.setCity(city);
 
             if (!isBlank(lastDonationStr)) {
-                donor.setLastDonationDate(Date.valueOf(lastDonationStr)); // expects "yyyy-MM-dd" from <input
-                                                                          // type="date">
+                donor.setLastDonationDate(Date.valueOf(lastDonationStr.trim()));
             }
 
             donorDAO.insertDonor(donor);

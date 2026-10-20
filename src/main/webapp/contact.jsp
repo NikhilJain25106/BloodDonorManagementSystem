@@ -107,12 +107,20 @@
                                 placeholder="Write your message here..." required></textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-brand btn-lg px-5" style="font-size:0.95rem;">
-                                <i class="fa-solid fa-paper-plane"></i> Send Message
+                            <button type="submit" class="btn btn-brand btn-lg px-5" style="font-size:0.95rem;" aria-label="Send inquiry or feedback to LifeDrop team">
+                                <i class="fa-solid fa-paper-plane me-1" aria-hidden="true"></i> Send Message
                             </button>
                         </div>
                     </div>
                 </form>
+
+                <!-- Statutory Grievance Office Box (DPDP Act Compliance) -->
+                <div class="mt-4 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0;font-size:0.85rem;color:#475569;">
+                    <div class="fw-700 text-dark mb-1">
+                        <i class="fa-solid fa-scale-balanced text-danger me-1" aria-hidden="true"></i>Data Protection &amp; Grievance Redressal Officer
+                    </div>
+                    <div>For statutory privacy requests, consent withdrawal, or data deletion under the DPDP Act 2023, you may directly contact <strong>Nikhil Jain</strong> at <a href="mailto:privacy@lifedrop.org" class="text-danger fw-600">privacy@lifedrop.org</a>.</div>
+                </div>
 
             </div>
         </div>

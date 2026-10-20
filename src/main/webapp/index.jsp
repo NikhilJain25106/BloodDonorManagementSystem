@@ -48,44 +48,44 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="stat-mini">
-                            <i class="fa-solid fa-users"></i>
-                            <h3>500+</h3>
-                            <small>Registered Donors</small>
+                            <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+                            <h3>8</h3>
+                            <small>ABO/Rh Blood Types</small>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-mini" style="margin-top:1.25rem;">
-                            <i class="fa-solid fa-droplet"></i>
-                            <h3>8</h3>
-                            <small>Blood Types Covered</small>
+                            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                            <h3>24/7</h3>
+                            <small>Emergency Directory</small>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-mini">
-                            <i class="fa-solid fa-heart-pulse"></i>
-                            <h3>1000+</h3>
-                            <small>Lives Saved</small>
+                            <i class="fa-solid fa-handshake-angle" aria-hidden="true"></i>
+                            <h3>100%</h3>
+                            <small>Free &amp; Voluntary</small>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-mini" style="margin-top:1.25rem;">
-                            <i class="fa-solid fa-hospital"></i>
-                            <h3>50+</h3>
-                            <small>Partner Hospitals</small>
+                            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                            <h3>DPDP</h3>
+                            <small>Privacy Safeguards</small>
                         </div>
                     </div>
                 </div>
                 <!-- Emergency card -->
                 <div style="background:#fff;border-radius:20px;padding:1.35rem 1.5rem;margin-top:1.5rem;box-shadow:0 24px 64px rgba(0,0,0,0.25);display:flex;align-items:center;gap:1rem;">
                     <div style="width:48px;height:48px;background:linear-gradient(135deg,#fff1f2,#ffe4e6);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(225,29,72,0.15);">
-                        <i class="fa-solid fa-droplet fa-lg" style="color:#e11d48;"></i>
+                        <i class="fa-solid fa-droplet fa-lg" style="color:#e11d48;" aria-hidden="true"></i>
                     </div>
                     <div style="flex:1;">
                         <div style="font-weight:800;font-size:0.92rem;color:#0f172a;letter-spacing:-0.3px;">Emergency Blood Request</div>
-                        <div style="color:#94a3b8;font-size:0.78rem;margin-top:2px;font-weight:500;">Find donors in your city instantly</div>
+                        <div style="color:#475569;font-size:0.78rem;margin-top:2px;font-weight:600;">Locate voluntary donors in your city</div>
                     </div>
-                    <a href="<%= cp %>/searchDonors" class="btn-red" style="flex-shrink:0;font-size:0.8rem;padding:0.5rem 1rem;white-space:nowrap;">
-                        Search <i class="fa-solid fa-arrow-right ms-1"></i>
+                    <a href="<%= cp %>/searchDonors" class="btn-red" style="flex-shrink:0;font-size:0.8rem;padding:0.5rem 1rem;white-space:nowrap;" aria-label="Search blood donors across India">
+                        Search Donors <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -129,8 +129,8 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn-red w-100" style="height:48px;justify-content:center;border-radius:12px;font-size:0.92rem;">
-                        <i class="fa-solid fa-magnifying-glass"></i> Search Now
+                    <button type="submit" class="btn-red w-100" style="height:48px;justify-content:center;border-radius:12px;font-size:0.92rem;" aria-label="Search available blood donors in selected city">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search Donors
                     </button>
                 </div>
             </div>
@@ -143,15 +143,15 @@
     <div class="text-center mb-5 fade-up">
         <span class="section-label">Browse by Blood Type</span>
         <h2 class="section-heading mt-3">Find Donors by Blood Group</h2>
-        <p class="mt-2" style="color:var(--gray-500);font-size:0.92rem;font-weight:500;">Click any blood group to instantly find available donors near you</p>
+        <p class="mt-2" style="color:#475569;font-size:0.92rem;font-weight:500;">Click any blood group to locate available donors in your region</p>
     </div>
     <div class="row g-3 justify-content-center">
         <% String[] bgroups = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
            for (String bg : bgroups) { %>
         <div class="col-6 col-sm-4 col-md-3 col-lg-auto fade-up">
-            <a href="<%= cp %>/searchDonors?bloodGroup=<%= bg %>" class="blood-group-card" style="min-width:120px;">
+            <a href="<%= cp %>/searchDonors?bloodGroup=<%= bg %>" class="blood-group-card" style="min-width:120px;" aria-label="Find <%= bg %> blood donors">
                 <div class="blood-type"><%= bg %></div>
-                <div class="find-text"><i class="fa-solid fa-magnifying-glass me-1"></i>Find Donors</div>
+                <div class="find-text"><i class="fa-solid fa-magnifying-glass me-1" aria-hidden="true"></i>Find <%= bg %> Donors</div>
             </a>
         </div>
         <% } %>
@@ -164,17 +164,17 @@
         <div class="text-center mb-5 fade-up">
             <span class="section-label">Simple Process</span>
             <h2 class="section-heading mt-3">How LifeDrop Works</h2>
-            <p class="mt-2" style="color:var(--gray-500);font-size:0.95rem;font-weight:500;">Three easy steps that can save a life today</p>
+            <p class="mt-2" style="color:#475569;font-size:0.95rem;font-weight:500;">Three transparent steps connecting voluntary donors with emergency recipients</p>
         </div>
         <div class="row g-4">
             <div class="col-md-4 fade-up">
                 <div class="feature-card text-center">
                     <div style="position:absolute;top:1.25rem;right:1.5rem;font-size:4rem;font-weight:900;color:#f1f5f9;line-height:1;z-index:0;letter-spacing:-2px;">01</div>
                     <div style="position:relative;z-index:1;">
-                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-user-plus"></i></div>
+                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></div>
                         <h5 class="fw-800 mb-2" style="letter-spacing:-0.3px;">Register as Donor</h5>
-                        <p style="color:var(--gray-500);margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Fill in your name, blood group, phone, email, address and city. Registration takes under 2 minutes and is completely free.</p>
-                        <a href="<%= cp %>/registerDonor" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;">Register Now <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                        <p style="color:#475569;margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Provide your clinical blood group, city, and verified contact number. Registration is free and takes under 2 minutes.</p>
+                        <a href="<%= cp %>/registerDonor" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;" aria-label="Register as a voluntary blood donor">Register as Donor <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -182,10 +182,10 @@
                 <div class="feature-card text-center">
                     <div style="position:absolute;top:1.25rem;right:1.5rem;font-size:4rem;font-weight:900;color:#fff1f2;line-height:1;z-index:0;letter-spacing:-2px;">02</div>
                     <div style="position:relative;z-index:1;">
-                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div>
                         <h5 class="fw-800 mb-2" style="letter-spacing:-0.3px;">Search Donors</h5>
-                        <p style="color:var(--gray-500);margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Filter donors by blood group and city. See name, age, gender and last donation date instantly &mdash; no login required.</p>
-                        <a href="<%= cp %>/searchDonors" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;">Search Now <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                        <p style="color:#475569;margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Filter donors by blood group and city. Review donor eligibility status and last donation date instantly without fees.</p>
+                        <a href="<%= cp %>/searchDonors" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;" aria-label="Search blood donor directory">Search Directory <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -193,10 +193,10 @@
                 <div class="feature-card text-center">
                     <div style="position:absolute;top:1.25rem;right:1.5rem;font-size:4rem;font-weight:900;color:#f1f5f9;line-height:1;z-index:0;letter-spacing:-2px;">03</div>
                     <div style="position:relative;z-index:1;">
-                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-phone"></i></div>
+                        <div class="feature-icon-box mx-auto"><i class="fa-solid fa-phone" aria-hidden="true"></i></div>
                         <h5 class="fw-800 mb-2" style="letter-spacing:-0.3px;">Connect & Donate</h5>
-                        <p style="color:var(--gray-500);margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Contact the donor or reach out through our platform. Coordinate and complete the life-saving donation together.</p>
-                        <a href="<%= cp %>/contact.jsp" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;">Contact Us <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                        <p style="color:#475569;margin-bottom:1.5rem;font-size:0.875rem;line-height:1.7;">Coordinate hospital appointments with available donors under licensed medical supervision.</p>
+                        <a href="<%= cp %>/contact.jsp" class="btn-red" style="font-size:0.82rem;padding:0.5rem 1.25rem;" aria-label="Contact LifeDrop support team">Contact Support <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>

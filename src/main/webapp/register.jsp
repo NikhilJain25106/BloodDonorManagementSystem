@@ -166,13 +166,29 @@
                             </div>
                         </div>
 
+                        <!-- Statutory DPDP Act & Medical Consent -->
+                        <div class="col-12 mt-4 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="consentDpdp" id="consentDpdp" value="true" required>
+                                <label class="form-check-label" for="consentDpdp" style="font-size:0.85rem;color:#334155;line-height:1.5;">
+                                    <strong>Statutory DPDP Consent:</strong> I give free, specific, and informed consent under the <em>Digital Personal Data Protection (DPDP) Act, 2023</em> for LifeDrop to process and display my blood group, city, and contact coordinates to emergency patients and hospitals seeking blood, as detailed in the <a href="<%= request.getContextPath() %>/privacy.jsp" target="_blank" class="text-danger fw-600">Privacy Policy</a>. <span style="color:var(--red);">*</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="consentTerms" id="consentTerms" value="true" required>
+                                <label class="form-check-label" for="consentTerms" style="font-size:0.85rem;color:#334155;line-height:1.5;">
+                                    <strong>Voluntary & Medical Declaration:</strong> I agree to the <a href="<%= request.getContextPath() %>/terms.jsp" target="_blank" class="text-danger fw-600">Terms & Conditions</a>. I confirm that I am donating 100% voluntarily without financial compensation and satisfy standard clinical eligibility criteria (18–65 years, weight ≥ 50kg). <span style="color:var(--red);">*</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Actions -->
                         <div class="col-12 mt-3 d-flex gap-3 flex-wrap">
-                            <button type="submit" class="btn btn-brand btn-lg px-5" style="font-size:0.95rem;">
-                                <i class="fa-solid fa-heart-pulse"></i> Register Now
+                            <button type="submit" class="btn btn-brand btn-lg px-5" style="font-size:0.95rem;" aria-label="Submit voluntary blood donor registration">
+                                <i class="fa-solid fa-heart-pulse me-1" aria-hidden="true"></i> Submit Voluntary Registration
                             </button>
                             <a href="<%= request.getContextPath() %>/index.jsp"
-                               class="btn btn-outline-secondary btn-lg" style="border-radius:10px;font-weight:600;font-size:0.9rem;">
+                               class="btn btn-outline-secondary btn-lg" style="border-radius:10px;font-weight:600;font-size:0.9rem;" aria-label="Cancel registration and return to homepage">
                                 Cancel
                             </a>
                         </div>
