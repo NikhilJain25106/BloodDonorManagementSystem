@@ -12,6 +12,8 @@
 [![Railway](https://img.shields.io/badge/Deployed-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
 [![CI](https://img.shields.io/github/actions/workflow/status/NikhilJain25106/BloodDonorManagementSystem/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI%20Build)](https://github.com/NikhilJain25106/BloodDonorManagementSystem/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![DPDP Act](https://img.shields.io/badge/DPDP_Act_2023-Compliant-059669?style=for-the-badge)](privacy.jsp)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1_AA-Accessible-2563EB?style=for-the-badge)](privacy.jsp)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
 
 <br/>
@@ -38,7 +40,9 @@
 - [Repository Structure](#-repository-structure)
 - [Database Schema & ER Model](#-database-schema--er-model)
 - [Application Endpoints & Routes](#-application-endpoints--routes)
-- [Security Hardening](#-security-hardening)
+- [Security Hardening & Defense-in-Depth](#-security-hardening--defense-in-depth)
+- [Legal, Privacy & Regulatory Compliance (DPDP Act 2023)](#-legal-privacy--regulatory-compliance-dpdp-act-2023)
+- [Accessibility & Inclusive Design (WCAG 2.1 AA)](#-accessibility--inclusive-design-wcag-21-aa)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Step 1: Clone Repository](#step-1--clone-repository)
@@ -47,7 +51,8 @@
   - [Step 4: Seed Admin Credentials](#step-4--seed-admin-credentials)
   - [Step 5: Build & Run Executable JAR](#step-5--build--run-executable-jar)
   - [Step 6: Access the Application](#step-6--access-the-application)
-- [Automated Testing & CI/CD](#-automated-testing--cicd)
+- [High-Performance Architecture & Scaling](#-high-performance-architecture--scaling)
+- [Automated Testing & Quality Assurance](#-automated-testing--quality-assurance)
 - [Cloud Deployment (Railway)](#-cloud-deployment-railway)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -259,53 +264,64 @@ BloodDonorManagementSystem/
 │   │   │   ├── model/
 │   │   │   │   ├── Admin.java        # Admin POJO entity
 │   │   │   │   └── Donor.java        # Donor POJO entity
+│   │   │   ├── security/
+│   │   │   │   ├── AuthInputValidator.java # Whitelist input validation & multi-pass HTML/JS stripping
+│   │   │   │   ├── PasswordUtil.java       # BCrypt cost 12, constant-time verification & dummy timing
+│   │   │   │   └── RateLimiterAndLockoutService.java # Rate limiter (10/min), 15m lockout, progressive delay & CAPTCHA
 │   │   │   ├── servlet/
 │   │   │   │   ├── AdminDashboardServlet.java # Loads all donors into admin view
-│   │   │   │   ├── AdminLoginServlet.java     # Authenticates admin credentials
+│   │   │   │   ├── AdminLoginServlet.java     # Authenticates admin credentials with rate limits & lockout
 │   │   │   │   ├── AdminLogoutServlet.java    # Destroys admin session
 │   │   │   │   ├── DeleteDonorServlet.java    # Removes donor record
 │   │   │   │   ├── DonorCardServlet.java      # Serves digital donor card
 │   │   │   │   ├── DonorCertificateServlet.java # Generates donor appreciation certificate
-│   │   │   │   ├── DonorLoginServlet.java     # Authenticates donors by email/phone
+│   │   │   │   ├── DonorLoginServlet.java     # Authenticates donors by email/phone (timing equalized)
 │   │   │   │   ├── DonorLogoutServlet.java    # Destroys donor session
-│   │   │   │   ├── RegisterDonorServlet.java  # Processes new donor registration
+│   │   │   │   ├── HealthServlet.java         # Container orchestration health probe (/health)
+│   │   │   │   ├── PasswordResetServlet.java  # Generic constant-time password recovery handler
+│   │   │   │   ├── RegisterDonorServlet.java  # Processes new donor registration with DPDP consent
 │   │   │   │   ├── SearchDonorServlet.java    # Multi-parameter donor search
 │   │   │   │   └── UpdateDonorServlet.java    # Updates existing donor details
 │   │   │   └── util/
-│   │   │       ├── DBConnection.java     # Dynamic environment-aware JDBC provider
+│   │   │       ├── DBConnection.java     # HikariCP connection pool with dynamic cloud environment detection
 │   │   │       ├── GenerateAdminHash.java# Utility script to generate BCrypt hashes
-│   │   │       └── PasswordUtil.java     # BCrypt salt generator and comparator
+│   │   │       └── PasswordUtil.java     # Forwarding adapter to com.blooddonor.security.PasswordUtil
 │   │   └── webapp/
 │   │       ├── 404.jsp               # Custom Not Found error page
 │   │       ├── 500.jsp               # Custom Server Error page
 │   │       ├── admin-dashboard.jsp   # Admin donor management table
-│   │       ├── admin-login.jsp       # Admin authentication interface
-│   │       ├── contact.jsp           # Healthcare support and contact form
+│   │       ├── admin-login.jsp       # Admin authentication interface with CAPTCHA triggers
+│   │       ├── contact.jsp           # Healthcare support, inquiries & Grievance Officer details
+│   │       ├── cookie-policy.jsp     # Cookie disclosures, zero-tracking guarantee & browser controls
 │   │       ├── donor-card.jsp        # Printable Digital Donor ID card
 │   │       ├── donor-certificate.jsp # Printable Certificate of Appreciation
-│   │       ├── donor-login.jsp       # Donor portal login interface
+│   │       ├── donor-login.jsp       # Donor portal login interface with CAPTCHA
 │   │       ├── edit-donor.jsp        # Edit donor details modal/form
-│   │       ├── index.jsp             # Public landing page & search hero
+│   │       ├── index.jsp             # Public landing page, factual metrics & search hero
 │   │       ├── manifest.json         # PWA Web App manifest
-│   │       ├── privacy.jsp           # Privacy Policy & data disclosure
-│   │       ├── register.jsp          # Donor onboarding form
+│   │       ├── privacy.jsp           # DPDP Act 2023 compliant Privacy Policy & data disclosure
+│   │       ├── register.jsp          # Donor onboarding form with statutory consent checkboxes
+│   │       ├── reset-password.jsp    # Password recovery request interface
 │   │       ├── robots.txt            # Search engine crawler instructions
-│   │       ├── search.jsp            # Donor search & filtered results view
+│   │       ├── search.jsp            # Accessible donor search & filtered results view
 │   │       ├── site.webmanifest      # W3C Web Application Manifest
 │   │       ├── sitemap.xml           # XML Sitemap for search indexing
-│   │       ├── terms.jsp             # Terms of Service & clinical disclaimer
+│   │       ├── terms.jsp             # Terms of Service & statutory non-commercial disclaimer
 │   │       ├── assets/
-│   │       │   ├── css/style.css     # Unified healthcare design system & styling
+│   │       │   ├── css/style.css     # Unified healthcare design system, focus rings & WCAG contrast
 │   │       │   ├── images/favicon.svg# Vector SVG brand icon
 │   │       │   └── js/validation.js  # Client-side form validation scripts
 │   │       ├── includes/
 │   │       │   ├── header.jsp        # Global navigation bar & meta tags
-│   │       │   └── footer.jsp        # Global footer & quick links
+│   │       │   └── footer.jsp        # Global footer, Cookie consent banner & legal details
 │   │       └── WEB-INF/
 │   │           └── web.xml           # Servlet mapping & session timeout configuration
-│   └── test/java/com/blooddonor/model/
-│       ├── AdminTest.java            # JUnit 5 unit tests for Admin model
-│       └── DonorTest.java            # JUnit 5 unit tests for Donor model
+│   └── test/java/com/blooddonor/
+│       ├── model/
+│       │   ├── AdminTest.java        # JUnit 5 unit tests for Admin model
+│       │   └── DonorTest.java        # JUnit 5 unit tests for Donor model
+│       └── security/
+│           └── AuthHardeningTest.java # 24 tests for input sanitation, rate limits, lockout, timing
 ├── .editorconfig                     # Consistent code formatting rules
 ├── .env.example                      # Sample environment variables configuration
 ├── .gitignore                        # Git exclusion rules
@@ -373,16 +389,19 @@ Stores administrative authentication credentials:
 | URL Route | HTTP Method | Access Level | Description |
 |:---|:---:|:---:|:---|
 | `/` | `GET` | **Public** | Home landing page, quick search, and compatibility matrix |
-| `/registerDonor` | `GET` / `POST` | **Public** | Form render and submission for new donor registrations |
+| `/health` | `GET` | **Public / Ops** | Container orchestration health probe returning JSON `{"status":"UP","service":"LifeDrop"}` |
+| `/registerDonor` | `GET` / `POST` | **Public** | Form render and submission for new donor registrations with DPDP consent |
 | `/searchDonors` | `GET` | **Public** | Search and filter donors by blood group and city |
-| `/contact.jsp` | `GET` | **Public** | Healthcare helpdesk, contacts, and inquiry form |
-| `/privacy.jsp` | `GET` | **Public** | Privacy policy and donor personal data handling terms |
-| `/terms.jsp` | `GET` | **Public** | Terms of service and medical eligibility disclaimers |
-| `/donorLogin` | `GET` / `POST` | **Public** | Donor identification portal using email or phone |
+| `/contact.jsp` | `GET` | **Public** | Healthcare helpdesk, inquiries, and Grievance Officer contacts |
+| `/privacy.jsp` | `GET` | **Public** | DPDP Act 2023 compliant privacy policy, data principal rights, and grievance process |
+| `/terms.jsp` | `GET` | **Public** | Terms of service, clinical responsibilities, and statutory non-commercial disclaimer |
+| `/cookie-policy.jsp` | `GET` | **Public** | Transparent cookie disclosures, zero tracking guarantee, and browser controls |
+| `/donorLogin` | `GET` / `POST` | **Public** | Donor identification portal using email or phone with rate limits and timing equalization |
 | `/donorLogout` | `GET` | **Donor** | Destroys donor session and redirects to login |
 | `/donorCard` | `GET` / `POST` | **Donor** | View digital donor ID card and record latest donation date |
 | `/donorCertificate` | `GET` | **Donor / Admin** | View, print, or download Certificate of Appreciation |
-| `/adminLogin` | `GET` / `POST` | **Public** | Administrator login form and BCrypt authentication |
+| `/resetPassword` | `GET` / `POST` | **Public** | Secure password reset request handler with uniform timing to thwart user enumeration |
+| `/adminLogin` | `GET` / `POST` | **Public** | Administrator login with BCrypt, rate limiting (10/min), 15m lockout, and CAPTCHA |
 | `/adminLogout` | `GET` | **Admin** | Invalidate admin session and redirect to login |
 | `/adminDashboard` | `GET` | **Admin Only** | Protected dashboard displaying all donors with management controls |
 | `/editDonor` | `GET` / `POST` | **Admin Only** | Fetch existing donor details and persist modifications |
@@ -390,22 +409,81 @@ Stores administrative authentication credentials:
 
 ---
 
-## 🔒 Security Hardening
+## 🔒 Security Hardening & Defense-in-Depth
 
-LifeDrop implements defense-in-depth security principles across all application layers:
+LifeDrop implements five core application security pillars engineered to protect donor data and platform integrity:
 
-1. **SQL Injection Immunization:**
-   - Every single database operation across `DonorDAO` and `AdminDAO` uses `java.sql.PreparedStatement` with parameterized placeholders (`?`). No concatenated queries exist.
-2. **Cryptographic Password Hashing:**
-   - Admin passwords are never saved in plain text. Passwords are encrypted using **BCrypt** with an automatic random 10-round salt via `jBCrypt` (`PasswordUtil.java`).
-3. **Centralized Filter Access Control:**
-   - `AdminAuthFilter` wraps all administrative endpoints (`/adminDashboard`, `/editDonor`, `/deleteDonor`, etc.). Direct URL tampering or unauthorized session spoofing is blocked and redirected immediately.
-4. **Dual-Layer Validation:**
-   - Both client-side JavaScript (`validation.js`) and strict server-side validation (`RegisterDonorServlet.java`) enforce valid phone formats (10 digits), RFC-compliant email formatting, valid blood types, and age boundaries (18 to 65).
-5. **Session Fixation Prevention:**
-   - Both `AdminLogoutServlet` and `DonorLogoutServlet` explicitly invoke `session.invalidate()` to completely destroy active session objects and clear cookie bindings.
-6. **Data Leakage Mitigation:**
-   - Raw database exceptions and internal stack traces are caught server-side and logged, while user interfaces receive sanitized, human-friendly status alerts. Custom branded `404` and `500` error handlers prevent servlet container fingerprinting.
+### 1. Server-Side Validation & Input Sanitization (`AuthInputValidator.java`)
+- **Strict Whitelist Schemas:** Validates all authentication and registration inputs on the server. Never relies solely on client-side controls.
+  - Emails validated against RFC 5322 regex schemas.
+  - Usernames restricted to alphanumeric and underscore characters (`^[a-zA-Z0-9_]{3,30}$`).
+  - Mobile numbers strictly validated to 10-digit Indian formats (`^[6-9][0-9]{9}$`).
+  - Password lengths strictly enforced between 8 and 128 characters.
+- **Multi-Pass XSS Stripping:** Free-text inputs undergo multi-pass regex stripping:
+  - Strips `<script>...</script>` and `<style>...</style>` tag pairs along with all encapsulated JavaScript/CSS body content.
+  - Strips all HTML tags, inline event handlers (`onload`, `onerror`, `onclick`), and `javascript:` URIs.
+
+### 2. Rate Limiting, Account Lockout & Adaptive CAPTCHA (`RateLimiterAndLockoutService.java`)
+- **IP-Based Rate Limiting:** Enforces a hard threshold of **10 requests per IP per minute** on authentication endpoints. Excess requests receive HTTP 429 status.
+- **Account Lockout:** Automatically locks accounts for **15 minutes** after 5 consecutive failed authentication attempts to thwart brute-force and credential-stuffing bots.
+- **Progressive Delay Backoff:** Introduces deliberate progressive server-side delays on repeated failures (e.g., 500ms on 1st attempt, 1,500ms on 2nd, 3,000ms on 3rd+) to computationally starve automated dictionary attacks.
+- **Adaptive CAPTCHA Challenge:** Triggers a mandatory human verification challenge after 3 failed login attempts.
+- **Redis / Upstash Cloud Ready:** Designed with automatic environment detection for Redis (`REDIS_URL`, `UPSTASH_REDIS_REST_URL`), falling back seamlessly to an in-memory thread-safe `ConcurrentHashMap` with background expiration cleanup.
+
+### 3. BCrypt Password Hashing & Constant-Time Verification (`PasswordUtil.java`)
+- **High Work-Factor Hashing:** All administrative passwords hashed with **BCrypt at work factor 12** (4,096 key derivation rounds), rendering rainbow tables and offline GPU cracking infeasible.
+- **Built-in Cryptographic Salting:** Every hash incorporates an independent cryptographically secure 128-bit pseudo-random salt.
+- **Constant-Time Verification:** Hash comparisons use `MessageDigest.isEqual` to eliminate byte-by-byte memory comparison timing side channels.
+- **Zero Plaintext Logging:** Passwords are never written to server logs, database tables, or exception traces.
+
+### 4. User Enumeration Neutralization & Timing Equalization
+- **Precomputed Dummy Verification:** When an authentication request arrives with a non-existent email or username, the system automatically executes a dummy verification (`PasswordUtil.dummyVerify()`) against a precomputed reference BCrypt hash.
+- **Timing Invariance:** Because BCrypt verification takes ~250–350ms, executing a dummy verification ensures the server takes identical time whether an account exists or not, eliminating side-channel response time analysis.
+
+### 5. Identical Generic Error Messages & Session Regeneration
+- **Uniform Error Responses:** Login endpoints return the identical generic error message: `"Incorrect email or password."` regardless of whether the email/username exists or the password was incorrect.
+- **Password Reset Privacy:** Password recovery requests consistently return `"If that email is registered, you'll receive a password reset link."` preventing attackers from probing for registered donor emails.
+- **Session Regeneration:** Upon successful authentication, existing sessions are invalidated and replaced with fresh session identifiers to prevent session fixation attacks.
+
+---
+
+## ⚖️ Legal, Privacy & Regulatory Compliance (DPDP Act 2023)
+
+LifeDrop is engineered to comply with Indian data privacy statutes, healthcare regulations, and consumer protection laws:
+
+### 1. Digital Personal Data Protection Act, 2023 (DPDP Act)
+- **Notice & Purpose Limitation (Sections 5 & 6):** Transparent notices provided prior to data collection, detailing the precise purpose (emergency blood matching).
+- **Affirmative, Granular Consent:** Donor registration enforces two mandatory, unbundled checkboxes:
+  1. *Statutory DPDP Consent:* Explicit agreement for LifeDrop to process and display blood group, city, and verified contact number in public search queries during medical emergencies.
+  2. *Voluntary Medical Declaration:* Affirmative confirmation that the donor is donating voluntarily without financial compensation and meets clinical eligibility criteria.
+  - Consent validation is strictly enforced on both the client side and server side (`RegisterDonorServlet.java`).
+- **Data Principal Rights (Sections 11–14):**
+  - **Right to Access & Rectify:** Donors can update their availability, phone number, and location from their self-service dashboard.
+  - **Right to Erasure / Revocation:** Donors can revoke consent or request permanent record deletion by contacting the Grievance Redressal Officer.
+- **Grievance Redressal Mechanism:** In compliance with DPDP Section 12, LifeDrop publishes contact details for its dedicated Grievance Officer:
+  - **Officer:** Grievance & Data Protection Officer, LifeDrop Operations
+  - **Email:** `grievance@lifedrop.org` / `help@lifedrop.org`
+  - **SLA:** Complaints acknowledged within 24 hours and fully resolved within 15 working days.
+
+### 2. Drugs and Cosmetics Act, 1940 & Non-Commercial Mandate
+- **100% Unremunerated Donation:** In compliance with the *Drugs and Cosmetics Act, 1940* and Supreme Court of India directives (*Common Cause v. Union of India*), LifeDrop prohibits any financial transactions, commercial sale, incentives, or rewards for blood donation.
+- **Clinical Liability Boundaries:** Clear statutory disclaimers state that LifeDrop is a directory platform, not a licensed blood bank or diagnostic facility. Clinical evaluations, hemoglobin checks, and serological screenings (HIV, Hepatitis B/C, Syphilis, Malaria) remain the exclusive statutory responsibility of attending hospitals and licensed blood banks.
+
+### 3. Transparent Cookie Policy & Zero Tracking
+- **Interactive Cookie Consent Banner:** Displayed on first visit and persisted in `localStorage` once accepted.
+- **Zero Third-Party Trackers:** Contains **zero** advertising cookies, **zero** cross-site behavioral tracking scripts, and **zero** third-party analytics trackers (no Google Analytics, Meta Pixel, or Hotjar).
+- **Strictly Necessary Cookies Only:** Uses only standard `JSESSIONID` session cookies required for authentication and state management.
+
+---
+
+## ♿ Accessibility & Inclusive Design (WCAG 2.1 AA)
+
+LifeDrop is committed to making digital healthcare accessible to all individuals, adhering to **Web Content Accessibility Guidelines (WCAG) 2.1 Level AA**:
+
+- **Keyboard Navigation:** Every interactive element (buttons, links, search dropdowns, form inputs, modal controls) features a visible `:focus-visible` double-ring outline (`box-shadow: 0 0 0 3px rgba(225,29,72,0.3)`) for complete keyboard traversability via `Tab` and `Shift+Tab`.
+- **Color Contrast Ratios:** All body text (`#475569`), headings (`#0f172a`), badge text, and brand elements meet or exceed the minimum 4.5:1 contrast ratio against light backgrounds.
+- **Descriptive Button Labels:** Buttons and call-to-action controls include clear, action-oriented labels and explicit `aria-label` attributes (e.g., `aria-label="Search available voluntary blood donors"`, `aria-label="Accept essential cookies and close banner"`).
+- **Screen Reader Readiness:** Semantic HTML5 elements (`<main>`, `<nav>`, `<header>`, `<footer>`, `<section>`, `<h1>`-`<h3>`), explicit `label for` form bindings, and `aria-hidden="true"` on decorative FontAwesome icons ensure seamless screen reader operation.
 
 ---
 
@@ -529,20 +607,29 @@ LifeDrop includes an automated test suite powered by **JUnit 5** with parameteri
 mvn test
 ```
 
-### Test Suite Breakdown (31 Tests Passing):
-1. **Clinical & Regulatory Validation:**
+### Test Suite Breakdown (55 Tests Passing):
+1. **Authentication Security & Hardening Tests (`AuthHardeningTest.java` — 24 Tests):**
+   - RFC-compliant email, username whitelist, and phone schema server-side validations.
+   - Comprehensive XSS prevention: stripping `<script>`, `<style>` blocks, inline event handlers, and malicious tags.
+   - Rate limiting: enforcement of max 10 requests/IP/minute with HTTP 429 triggers.
+   - Account lockout: automatic 15-minute lockout after 5 consecutive failures.
+   - Adaptive CAPTCHA challenge triggers after 3 failed attempts.
+   - BCrypt work factor 12 cryptographic verification and constant-time string comparisons.
+   - Timing equalization: uniform execution duration across registered vs. unregistered accounts via `dummyVerify()`.
+   - Generic error messages: uniform responses to prevent user enumeration on login and password reset endpoints.
+2. **Clinical & Regulatory Validation (`DonorValidationTest.java` — 24 Tests):**
    - Strict donor age boundary assertions ($18 \le \text{age} \le 65$).
    - 10-digit strict phone number regex verification.
    - RFC 5322-compliant email regex supporting subdomains (`.co.in`, `.org.uk`).
    - Standard ABO/Rh blood group taxonomy validation (`A+`, `A-`, `B+`, `B-`, `AB+`, `AB-`, `O+`, `O-`).
-2. **Security & Cryptography:**
+3. **Security & Cryptography (`PasswordUtilTest.java` — 3 Tests):**
    - BCrypt salt independence and 60-character hash structure validation.
    - Password verification with positive and negative attack vectors.
-3. **Data Model Integrity:**
+4. **Data Model Integrity (`AdminTest.java`, `DonorTest.java` — 4 Tests):**
    - Parameterized constructor and mutation testing across `Donor` and `Admin` models.
 
 ### Continuous Integration (CI)
-Every commit and pull request pushed to `main` triggers GitHub Actions (`.github/workflows/ci.yml`), which executes `mvn -B clean verify` on Temurin OpenJDK 17.
+Every commit and pull request pushed to `main` triggers GitHub Actions (`.github/workflows/ci.yml`), which executes `mvn -B clean verify` on Temurin OpenJDK 17 across all 55 tests.
 
 ---
 
