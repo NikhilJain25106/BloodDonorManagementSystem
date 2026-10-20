@@ -36,6 +36,11 @@ CREATE TABLE IF NOT EXISTS donors (
 
 CREATE INDEX idx_donors_blood_group ON donors (blood_group);
 CREATE INDEX idx_donors_city ON donors (city);
+-- High-performance composite index for emergency matchmaking (blood_group + city + last_donation_date)
+-- Eliminates filesort when filtering by blood group and city and sorting by availability
+CREATE INDEX idx_donors_search_composite ON donors (blood_group, city, last_donation_date);
+-- Speeds up admin dashboard queries ordered by most recent registrations
+CREATE INDEX idx_donors_created_at ON donors (created_at DESC);
 
 -- ---------------------------------------------------------------------
 -- Table: admin_users

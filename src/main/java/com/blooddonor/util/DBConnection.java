@@ -1,14 +1,21 @@
 package com.blooddonor.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Manages database connectivity using HikariCP, an enterprise-grade,
+ * high-performance JDBC connection pool.
+ *
+ * Replaces direct DriverManager connections to prevent TCP handshake
+ * overhead on every request and avoid connection exhaustion under load.
+ */
 public class DBConnection {
 
-    private static final String DB_URL;
-    private static final String DB_USER;
-    private static final String DB_PASSWORD;
+    private static final HikariDataSource dataSource;
 
     static {
         try {
@@ -24,17 +31,20 @@ public class DBConnection {
         String mysqlPort = System.getenv("MYSQLPORT");
         String mysqlDatabase = System.getenv("MYSQLDATABASE");
 
+        String jdbcUrl;
+        String user;
+        String password;
+
         if (mysqlHost != null && !mysqlHost.isEmpty()) {
-            // Railway provides individual variables - build JDBC URL from parts
+            // Railway provides individual environment variables
             String port = (mysqlPort != null) ? mysqlPort : "3306";
             String database = (mysqlDatabase != null) ? mysqlDatabase : "railway";
-            DB_URL = "jdbc:mysql://" + mysqlHost + ":" + port + "/" + database
-                   + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-            DB_USER = mysqlUser;
-            DB_PASSWORD = mysqlPassword;
+            jdbcUrl = "jdbc:mysql://" + mysqlHost + ":" + port + "/" + database
+                    + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+            user = mysqlUser;
+            password = mysqlPassword;
         } else if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
             // Fallback: parse from MYSQL_URL if individual vars not available
-            // Format: mysql://user:password@host:port/database
             String stripped = mysqlUrl.replace("mysql://", "");
             String[] atSplit = stripped.split("@");
             String[] userPass = atSplit[0].split(":");
@@ -43,20 +53,52 @@ public class DBConnection {
             String host = hostPort[0];
             String port = (hostPort.length > 1) ? hostPort[1] : "3306";
             String database = hostDb[1];
-            DB_URL = "jdbc:mysql://" + host + ":" + port + "/" + database
-                   + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-            DB_USER = userPass[0];
-            DB_PASSWORD = userPass[1];
+            jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
+                    + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+            user = userPass[0];
+            password = userPass[1];
         } else {
             // Local development fallback
-            DB_URL = "jdbc:mysql://localhost:3306/blood_donor_db"
-                   + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true";
-            DB_USER = "root";
-            DB_PASSWORD = "@NikhilJain25107045";
+            jdbcUrl = "jdbc:mysql://localhost:3306/blood_donor_db"
+                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true";
+            user = "root";
+            password = "@NikhilJain25107045";
         }
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(user);
+        config.setPassword(password);
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+        // Connection pool sizing & timeouts
+        config.setMaximumPoolSize(15);
+        config.setMinimumIdle(3);
+        config.setIdleTimeout(300000);       // 5 minutes
+        config.setConnectionTimeout(20000);  // 20 seconds
+        config.setMaxLifetime(1200000);      // 20 minutes
+        config.setPoolName("LifeDropHikariPool");
+
+        // MySQL statement caching optimizations
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("useServerPrepStmts", "true");
+
+        dataSource = new HikariDataSource(config);
     }
 
+    /**
+     * Borrows an active connection from the HikariCP connection pool.
+     */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        return dataSource.getConnection();
+    }
+
+    /**
+     * Returns the underlying HikariDataSource instance for metrics or health checks.
+     */
+    public static HikariDataSource getDataSource() {
+        return dataSource;
     }
 }

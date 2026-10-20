@@ -1,0 +1,13 @@
+target/
+!.mvn/
+.git/
+.gitignore
+.vscode/
+*.log
+*.tmp
+.env
+screenshots/
+Lifedrop_Mini_Project_Report.docx
+PROJECT_REPORT.md
+Untitled-1.txt
+tomcat.8080/

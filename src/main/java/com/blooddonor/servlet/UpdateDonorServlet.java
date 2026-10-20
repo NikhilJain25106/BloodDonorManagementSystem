@@ -96,7 +96,7 @@ public class UpdateDonorServlet extends HttpServlet {
         if (isBlank(phone) || !phone.matches("\\d{10}")) {
             errors.append("Phone number must be exactly 10 digits. ");
         }
-        if (isBlank(email) || !email.matches("^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+        if (isBlank(email) || !email.matches("^[\\w.+-]+@([\\w-]+\\.)+[a-zA-Z]{2,}$")) {
             errors.append("A valid email address is required. ");
         }
         if (isBlank(address))
