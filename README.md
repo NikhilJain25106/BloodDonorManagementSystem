@@ -16,7 +16,7 @@
 
 <br/>
 
-[**Explore Live Demo »**](https://lifedrop-app.up.railway.app) · [**Report Bug**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=bug_report.md) · [**Request Feature**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=feature_request.md)
+[**Explore Live Demo »**](https://lifedrop-app.up.railway.app) · [**Academic Project Report »**](PROJECT_REPORT.md) · [**Report Bug**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=bug_report.md) · [**Request Feature**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=feature_request.md)
 
 </div>
 
@@ -26,16 +26,17 @@
 
 - [Live Demo & Quick Access](#-live-demo--quick-access)
 - [Project Overview](#-project-overview)
+- [Academic Project Report & Documentation](#-academic-project-report--documentation)
 - [Key Features](#-key-features)
   - [1. Public Healthcare Portal](#1-public-healthcare-portal)
   - [2. Donor Self-Service Portal](#2-donor-self-service-portal)
   - [3. Secure Admin Management System](#3-secure-admin-management-system)
   - [4. Platform Governance & PWA](#4-platform-governance--pwa)
 - [Application Screenshots](#-application-screenshots)
-- [System Architecture](#-system-architecture)
+- [System Architecture & Visual Diagrams](#-system-architecture--visual-diagrams)
 - [Technology Stack](#-technology-stack)
 - [Repository Structure](#-repository-structure)
-- [Database Schema](#-database-schema)
+- [Database Schema & ER Model](#-database-schema--er-model)
 - [Application Endpoints & Routes](#-application-endpoints--routes)
 - [Security Hardening](#-security-hardening)
 - [Getting Started](#-getting-started)
@@ -60,6 +61,7 @@
 |:---|:---|:---|
 | **Live Application** | [lifedrop-app.up.railway.app](https://lifedrop-app.up.railway.app) | Hosted on Railway with cloud MySQL |
 | **GitHub Repository** | [NikhilJain25106/BloodDonorManagementSystem](https://github.com/NikhilJain25106/BloodDonorManagementSystem) | Primary open-source repository |
+| **Technical Documentation** | [`PROJECT_REPORT.md`](PROJECT_REPORT.md) &nbsp;\|&nbsp; [Word Report (.docx)](LifeDrop_Mini_Project_Report.docx) | Formal academic project documentation & analysis |
 | **Admin Portal** | Username: `admin` &nbsp;\|&nbsp; Password: `Admin@123` | Accessible at `/adminLogin` |
 | **Sample Donor Login** | Identifier: `rohan.mehta@example.com` or `9876543210` | Accessible at `/donorLogin` |
 
@@ -70,6 +72,28 @@
 **LifeDrop** is an enterprise-grade Blood Donor Management System designed to bridge the gap between voluntary blood donors, patients requiring emergency transfusions, and blood banks. 
 
 Built strictly with clean, foundational Java EE standards (**Java Servlets 4.0**, **JavaServer Pages**, **JDBC**, and **MySQL 8.0**), LifeDrop follows pure **Model-View-Controller (MVC)** principles without relying on heavy abstractions or third-party web frameworks. It runs via an embedded Apache Tomcat 9 runtime packaged into a standalone fat JAR for effortless containerization, local execution, and cloud deployment.
+
+---
+
+## 📚 Academic Project Report & Documentation
+
+LifeDrop was engineered as an academic mini-project for the **Department of Computer Science Engineering (Data Science)** at **A. P. Shah Institute of Technology, Thane** (affiliated with the **University of Mumbai**), under the guidance of **Ms. Rajashri Chaudhari**.
+
+The full project report is published directly within the repository in both markdown and document formats:
+
+| Document | Format | Description |
+|:---|:---:|:---|
+| [**`PROJECT_REPORT.md`**](PROJECT_REPORT.md) | Markdown | Complete technical report including literature review, requirement engineering, system design, and JUnit testing verification |
+| [**`LifeDrop_Mini_Project_Report.docx`**](LifeDrop_Mini_Project_Report.docx) | Microsoft Word | Formal formatted academic submission report with institutional certification, acknowledgments, and chapter division |
+
+### Key Report Chapters:
+- **Chapter 1 — Introduction:** Clinical context of voluntary blood donation, problem formulation, objectives, and scope.
+- **Chapter 2 — Literature Survey:** Comparative study of existing blood donation platforms and gap analysis.
+- **Chapter 3 — Requirement Analysis:** Functional specifications, non-functional requirements, and hardware/software constraints.
+- **Chapter 4 — System Design:** High-level MVC architecture, Data Flow Diagrams (DFD Level 0 & Level 1), and Entity-Relationship (ER) model.
+- **Chapter 5 — Implementation:** Core module breakdown, DAO patterns, password security hardening, and dynamic cloud deployment.
+- **Chapter 6 — Testing & Results:** Automated JUnit 5 test matrices, access control penetration tests, and performance benchmarks.
+- **Chapter 7 — Conclusion & Future Scope:** Technical summary, limitations, and roadmaps for GPS radius mapping, automated SMS gateways, and hospital inventory integration.
 
 ---
 
@@ -131,9 +155,23 @@ Built strictly with clean, foundational Java EE standards (**Java Servlets 4.0**
 
 ---
 
-## 🏛 System Architecture
+## 🏛 System Architecture & Visual Diagrams
 
-The project strictly follows the **Model-View-Controller (MVC)** architectural design pattern:
+LifeDrop strictly follows the **Model-View-Controller (MVC)** architectural design pattern, isolating presentation from business logic and database persistence:
+
+<div align="center">
+
+### High-Level System Architecture
+<img src="architecture_diagram.png" alt="LifeDrop System Architecture Diagram" width="850"/>
+
+<br/><br/>
+
+### Data Flow Diagram (DFD Level 0 & Level 1)
+<img src="dfd_diagram.png" alt="LifeDrop Data Flow Diagram" width="850"/>
+
+</div>
+
+### Component Interaction Workflow (Mermaid)
 
 ```mermaid
 flowchart TD
@@ -271,12 +309,17 @@ BloodDonorManagementSystem/
 ├── .editorconfig                     # Consistent code formatting rules
 ├── .env.example                      # Sample environment variables configuration
 ├── .gitignore                        # Git exclusion rules
+├── architecture_diagram.png          # System architecture and MVC component flow
 ├── CODE_OF_CONDUCT.md                # Community participation guidelines
 ├── CONTRIBUTING.md                    # Contribution rules and branch workflow
+├── dfd_diagram.png                   # Data Flow Diagram (DFD Level 0 & Level 1)
+├── er_diagram.png                    # Entity-Relationship (ER) database model
 ├── LICENSE                           # MIT License
+├── LifeDrop_Mini_Project_Report.docx # Formatted academic report submission document
 ├── nixpacks.toml                     # Nixpacks build definition for Railway
 ├── pom.xml                           # Maven dependencies, plugins, and fat JAR build
 ├── Procfile                          # Cloud process execution command
+├── PROJECT_REPORT.md                 # Complete technical mini-project documentation
 ├── railway.toml                      # Railway deployment configuration
 ├── README.md                         # Project documentation
 └── SECURITY.md                       # Security policy and vulnerability disclosure
@@ -284,7 +327,14 @@ BloodDonorManagementSystem/
 
 ---
 
-## 🗄 Database Schema
+## 🗄 Database Schema & ER Model
+
+<div align="center">
+
+### Entity-Relationship (ER) Diagram
+<img src="er_diagram.png" alt="LifeDrop Entity-Relationship Diagram" width="850"/>
+
+</div>
 
 The database consists of two normalized tables created in `blood_donor_db`:
 
@@ -505,6 +555,8 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more details
 
 **Nikhil Jain**  
 - **GitHub:** [@NikhilJain25106](https://github.com/NikhilJain25106)  
-- **Repository:** [BloodDonorManagementSystem](https://github.com/NikhilJain25106/BloodDonorManagementSystem)
+- **Repository:** [BloodDonorManagementSystem](https://github.com/NikhilJain25106/BloodDonorManagementSystem)  
+- **Academic Affiliation:** Department of Computer Science Engineering (Data Science), A. P. Shah Institute of Technology, Thane (Affiliated with University of Mumbai)  
+- **Project Guide:** Ms. Rajashri Chaudhari
 
 *Built with passion to support healthcare heroes and life-saving voluntary blood donors everywhere.* 🩸
