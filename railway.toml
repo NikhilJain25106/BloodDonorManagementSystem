@@ -1,6 +1,8 @@
-﻿[build]
-builder = "nixpacks"
+[build]
+builder = "NIXPACKS"
 
 [deploy]
 startCommand = "java -jar target/BloodDonorManagementSystem.jar"
-restartPolicyType = "on_failure"
+healthcheckPath = "/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"

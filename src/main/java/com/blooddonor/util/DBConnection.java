@@ -65,33 +65,47 @@ public class DBConnection {
             password = "@NikhilJain25107045";
         }
 
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(jdbcUrl);
-        config.setUsername(user);
-        config.setPassword(password);
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        HikariDataSource ds = null;
+        try {
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(jdbcUrl);
+            config.setUsername(user);
+            config.setPassword(password);
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-        // Connection pool sizing & timeouts
-        config.setMaximumPoolSize(15);
-        config.setMinimumIdle(3);
-        config.setIdleTimeout(300000);       // 5 minutes
-        config.setConnectionTimeout(20000);  // 20 seconds
-        config.setMaxLifetime(1200000);      // 20 minutes
-        config.setPoolName("LifeDropHikariPool");
+            // Non-blocking initialization: do not crash JVM if database takes time to connect
+            config.setInitializationFailTimeout(-1);
 
-        // MySQL statement caching optimizations
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.addDataSourceProperty("useServerPrepStmts", "true");
+            // Connection pool sizing & timeouts
+            config.setMaximumPoolSize(15);
+            config.setMinimumIdle(3);
+            config.setIdleTimeout(300000);       // 5 minutes
+            config.setConnectionTimeout(20000);  // 20 seconds
+            config.setMaxLifetime(1200000);      // 20 minutes
+            config.setPoolName("LifeDropHikariPool");
 
-        dataSource = new HikariDataSource(config);
+            // MySQL statement caching optimizations
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.addDataSourceProperty("useServerPrepStmts", "true");
+
+            ds = new HikariDataSource(config);
+            System.out.println("HikariCP LifeDropHikariPool initialized successfully.");
+        } catch (Exception e) {
+            System.err.println("WARN: HikariDataSource initialization failed or delayed: " + e.getMessage());
+        }
+
+        dataSource = ds;
     }
 
     /**
      * Borrows an active connection from the HikariCP connection pool.
      */
     public static Connection getConnection() throws SQLException {
+        if (dataSource == null) {
+            throw new SQLException("Database connection pool is not initialized. Please verify MySQL environment variables.");
+        }
         return dataSource.getConnection();
     }
 

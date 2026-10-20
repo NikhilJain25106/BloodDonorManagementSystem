@@ -32,6 +32,9 @@ public class Main {
         // 3. Resolve webapp directory with path fallbacks
         File webappDir = new File("src/main/webapp");
         if (!webappDir.exists()) {
+            webappDir = new File("/app/src/main/webapp");
+        }
+        if (!webappDir.exists()) {
             webappDir = new File("../src/main/webapp");
         }
         if (!webappDir.exists()) {
@@ -42,6 +45,9 @@ public class Main {
 
         // 4. Map classes directory if present on filesystem (for Servlet scanning)
         File classesDir = new File("target/classes");
+        if (!classesDir.exists()) {
+            classesDir = new File("/app/target/classes");
+        }
         if (!classesDir.exists()) {
             classesDir = new File("../target/classes");
         }

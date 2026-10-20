@@ -21,10 +21,19 @@ WORKDIR /app
 
 # Run as non-privileged system user for defensive container security
 RUN addgroup -S lifedropgroup && adduser -S lifedropuser -G lifedropgroup
-USER lifedropuser
 
-# Copy executable fat JAR from builder stage
-COPY --from=builder --chown=lifedropuser:lifedropgroup /build/target/BloodDonorManagementSystem.jar app.jar
+# Pre-create Tomcat work and temp directories with correct permissions
+RUN mkdir -p /tmp/tomcat-lifedrop && chown -R lifedropuser:lifedropgroup /tmp/tomcat-lifedrop
+
+# Copy static web assets, JSP pages, and compiled servlet classes required by Tomcat
+COPY --from=builder --chown=lifedropuser:lifedropgroup /build/src/main/webapp /app/src/main/webapp
+COPY --from=builder --chown=lifedropuser:lifedropgroup /build/target/classes /app/target/classes
+
+# Copy executable fat JAR (provide both app.jar and target/ path for complete compatibility)
+COPY --from=builder --chown=lifedropuser:lifedropgroup /build/target/BloodDonorManagementSystem.jar /app/app.jar
+RUN mkdir -p /app/target && ln -sf /app/app.jar /app/target/BloodDonorManagementSystem.jar && chown -R lifedropuser:lifedropgroup /app/target
+
+USER lifedropuser
 
 # Expose default HTTP application port
 ENV PORT=8080
