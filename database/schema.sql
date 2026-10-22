@@ -31,16 +31,12 @@ CREATE TABLE IF NOT EXISTS donors (
 
     CONSTRAINT chk_donor_age CHECK (age BETWEEN 18 AND 65),
     CONSTRAINT uq_donor_phone UNIQUE (phone),
-    CONSTRAINT uq_donor_email UNIQUE (email)
+    CONSTRAINT uq_donor_email UNIQUE (email),
+    INDEX idx_donors_blood_group (blood_group),
+    INDEX idx_donors_city (city),
+    INDEX idx_donors_search_composite (blood_group, city, last_donation_date),
+    INDEX idx_donors_created_at (created_at DESC)
 ) ENGINE=InnoDB;
-
-CREATE INDEX idx_donors_blood_group ON donors (blood_group);
-CREATE INDEX idx_donors_city ON donors (city);
--- High-performance composite index for emergency matchmaking (blood_group + city + last_donation_date)
--- Eliminates filesort when filtering by blood group and city and sorting by availability
-CREATE INDEX idx_donors_search_composite ON donors (blood_group, city, last_donation_date);
--- Speeds up admin dashboard queries ordered by most recent registrations
-CREATE INDEX idx_donors_created_at ON donors (created_at DESC);
 
 -- ---------------------------------------------------------------------
 -- Table: admin_users
@@ -56,9 +52,16 @@ CREATE TABLE IF NOT EXISTS admin_users (
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- Seed data - sample donors so Search Donors has something to show
+-- Seed data - default administrator account (admin / Admin@123)
 -- ---------------------------------------------------------------------
-INSERT INTO donors (full_name, age, gender, blood_group, phone, email, address, city, last_donation_date)
+INSERT INTO admin_users (username, password_hash, full_name)
+VALUES ('admin', '$2a$12$i1mnIQro/fBS/F9myvB7muiXTLqPdPYxuK4P/ga/vJKB4CAq0hwZe', 'System Administrator')
+ON DUPLICATE KEY UPDATE full_name=VALUES(full_name);
+
+-- ---------------------------------------------------------------------
+-- Seed data - sample donors so Search Donors has starter data
+-- ---------------------------------------------------------------------
+INSERT IGNORE INTO donors (full_name, age, gender, blood_group, phone, email, address, city, last_donation_date)
 VALUES
     ('Rohan Mehta', 28, 'Male', 'O+', '9876543210', 'rohan.mehta@example.com', '12 MG Road', 'Mumbai', '2026-06-15'),
     ('Priya Sharma', 24, 'Female', 'A+', '9876543211', 'priya.sharma@example.com', '45 Park Street', 'Pune', NULL),
