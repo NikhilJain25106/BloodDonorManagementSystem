@@ -24,45 +24,67 @@ public class DBConnection {
             throw new RuntimeException("MySQL JDBC Driver not found.", e);
         }
 
-        String mysqlUrl = System.getenv("MYSQL_URL");
-        String mysqlUser = System.getenv("MYSQLUSER");
-        String mysqlPassword = System.getenv("MYSQLPASSWORD");
-        String mysqlHost = System.getenv("MYSQLHOST");
-        String mysqlPort = System.getenv("MYSQLPORT");
-        String mysqlDatabase = System.getenv("MYSQLDATABASE");
+        java.util.Map<String, String> dotenv = loadDotEnv();
+
+        String mysqlUrl = getEnvOrProp("MYSQL_URL", dotenv);
+        String mysqlUser = getEnvOrProp("MYSQLUSER", dotenv);
+        if (mysqlUser == null) mysqlUser = getEnvOrProp("MYSQL_USER", dotenv);
+        if (mysqlUser == null) mysqlUser = getEnvOrProp("DB_USER", dotenv);
+
+        String mysqlPassword = getEnvOrProp("MYSQLPASSWORD", dotenv);
+        if (mysqlPassword == null) mysqlPassword = getEnvOrProp("MYSQL_PASSWORD", dotenv);
+        if (mysqlPassword == null) mysqlPassword = getEnvOrProp("DB_PASSWORD", dotenv);
+
+        String mysqlHost = getEnvOrProp("MYSQLHOST", dotenv);
+        if (mysqlHost == null) mysqlHost = getEnvOrProp("MYSQL_HOST", dotenv);
+        if (mysqlHost == null) mysqlHost = getEnvOrProp("DB_HOST", dotenv);
+
+        String mysqlPort = getEnvOrProp("MYSQLPORT", dotenv);
+        if (mysqlPort == null) mysqlPort = getEnvOrProp("MYSQL_PORT", dotenv);
+        if (mysqlPort == null) mysqlPort = getEnvOrProp("DB_PORT", dotenv);
+
+        String mysqlDatabase = getEnvOrProp("MYSQLDATABASE", dotenv);
+        if (mysqlDatabase == null) mysqlDatabase = getEnvOrProp("MYSQL_DATABASE", dotenv);
+        if (mysqlDatabase == null) mysqlDatabase = getEnvOrProp("DB_NAME", dotenv);
+
+        String host = (mysqlHost != null && !mysqlHost.isEmpty()) ? mysqlHost : "localhost";
+        String port = (mysqlPort != null && !mysqlPort.isEmpty()) ? mysqlPort : "3306";
+        String defaultDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host)) ? "railway" : "blood_donor_db";
+        String database = (mysqlDatabase != null && !mysqlDatabase.isEmpty()) ? mysqlDatabase : defaultDb;
+        String user = (mysqlUser != null && !mysqlUser.isEmpty()) ? mysqlUser : "root";
+        String password = (mysqlPassword != null) ? mysqlPassword : "@NikhilJain25107045";
 
         String jdbcUrl;
-        String user;
-        String password;
 
-        if (mysqlHost != null && !mysqlHost.isEmpty()) {
-            // Railway provides individual environment variables
-            String port = (mysqlPort != null) ? mysqlPort : "3306";
-            String database = (mysqlDatabase != null) ? mysqlDatabase : "railway";
-            jdbcUrl = "jdbc:mysql://" + mysqlHost + ":" + port + "/" + database
-                    + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-            user = mysqlUser;
-            password = mysqlPassword;
-        } else if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
-            // Fallback: parse from MYSQL_URL if individual vars not available
-            String stripped = mysqlUrl.replace("mysql://", "");
-            String[] atSplit = stripped.split("@");
-            String[] userPass = atSplit[0].split(":");
-            String[] hostDb = atSplit[1].split("/");
-            String[] hostPort = hostDb[0].split(":");
-            String host = hostPort[0];
-            String port = (hostPort.length > 1) ? hostPort[1] : "3306";
-            String database = hostDb[1];
+        if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
+            // Full URL provided (e.g. mysql://user:pass@host:port/dbname)
+            if (mysqlUrl.startsWith("mysql://")) {
+                String stripped = mysqlUrl.replace("mysql://", "");
+                String[] atSplit = stripped.split("@");
+                if (atSplit.length > 1) {
+                    String[] userPass = atSplit[0].split(":", 2);
+                    user = userPass[0];
+                    if (userPass.length > 1) {
+                        password = userPass[1];
+                    }
+                    String[] hostDb = atSplit[1].split("/", 2);
+                    String[] hostPort = hostDb[0].split(":", 2);
+                    host = hostPort[0];
+                    if (hostPort.length > 1) {
+                        port = hostPort[1];
+                    }
+                    if (hostDb.length > 1) {
+                        database = hostDb[1].split("\\?")[0];
+                    }
+                }
+            } else if (mysqlUrl.startsWith("jdbc:mysql://")) {
+                jdbcUrl = mysqlUrl;
+            }
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-            user = userPass[0];
-            password = userPass[1];
+                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
         } else {
-            // Local development fallback
-            jdbcUrl = "jdbc:mysql://localhost:3306/blood_donor_db"
-                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true";
-            user = "root";
-            password = "@NikhilJain25107045";
+            jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
+                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
         }
 
         HikariDataSource ds = null;
@@ -72,9 +94,6 @@ public class DBConnection {
             config.setUsername(user);
             config.setPassword(password);
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-
-            // Non-blocking initialization: do not crash JVM if database takes time to connect
-            config.setInitializationFailTimeout(-1);
 
             // Connection pool sizing & timeouts
             config.setMaximumPoolSize(15);
@@ -91,12 +110,84 @@ public class DBConnection {
             config.addDataSourceProperty("useServerPrepStmts", "true");
 
             ds = new HikariDataSource(config);
-            System.out.println("HikariCP LifeDropHikariPool initialized successfully.");
+            System.out.println("=======================================================");
+            System.out.println("[LifeDrop DB] HikariCP Connection Pool Initialized!");
+            System.out.println("[LifeDrop DB] Target: " + jdbcUrl);
+            System.out.println("[LifeDrop DB] User:   " + user);
+            System.out.println("=======================================================");
         } catch (Exception e) {
-            System.err.println("WARN: HikariDataSource initialization failed or delayed: " + e.getMessage());
+            System.err.println("=======================================================");
+            System.err.println("[LifeDrop DB] WARNING: Connection Pool initialization failed or delayed: " + e.getMessage());
+            System.err.println("[LifeDrop DB] Target attempted: " + jdbcUrl);
+            System.err.println("[LifeDrop DB] User attempted:   " + user);
+            System.err.println("=======================================================");
         }
 
         dataSource = ds;
+    }
+
+    /**
+     * Resolves configuration key from:
+     * 1. System environment variables
+     * 2. JVM System properties (-Dkey=value)
+     * 3. .env file
+     */
+    private static String getEnvOrProp(String key, java.util.Map<String, String> dotenv) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) {
+            return val.trim();
+        }
+        val = System.getProperty(key);
+        if (val != null && !val.trim().isEmpty()) {
+            return val.trim();
+        }
+        if (dotenv != null && dotenv.containsKey(key)) {
+            val = dotenv.get(key);
+            if (val != null && !val.trim().isEmpty()) {
+                return val.trim();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Minimal zero-dependency .env file parser.
+     */
+    private static java.util.Map<String, String> loadDotEnv() {
+        java.util.Map<String, String> envMap = new java.util.HashMap<>();
+        String[] candidatePaths = {
+            ".env",
+            "../.env",
+            System.getProperty("user.dir") + java.io.File.separator + ".env"
+        };
+
+        for (String path : candidatePaths) {
+            java.io.File envFile = new java.io.File(path);
+            if (envFile.exists() && envFile.isFile()) {
+                try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(envFile))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.isEmpty() || line.startsWith("#")) {
+                            continue;
+                        }
+                        int eqIdx = line.indexOf('=');
+                        if (eqIdx > 0) {
+                            String k = line.substring(0, eqIdx).trim();
+                            String v = line.substring(eqIdx + 1).trim();
+                            if ((v.startsWith("\"") && v.endsWith("\"")) || (v.startsWith("'") && v.endsWith("'"))) {
+                                v = v.substring(1, v.length() - 1);
+                            }
+                            envMap.put(k, v);
+                        }
+                    }
+                    System.out.println("[LifeDrop DB] Loaded database settings from " + envFile.getAbsolutePath());
+                    break;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return envMap;
     }
 
     /**
@@ -104,7 +195,7 @@ public class DBConnection {
      */
     public static Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            throw new SQLException("Database connection pool is not initialized. Please verify MySQL environment variables.");
+            throw new SQLException("Database connection pool is not initialized. Please verify MySQL configuration.");
         }
         return dataSource.getConnection();
     }
