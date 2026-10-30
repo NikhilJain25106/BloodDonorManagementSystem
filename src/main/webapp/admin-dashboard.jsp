@@ -113,6 +113,32 @@
         </div>
     </div>
 
+    <!-- Chart.js Interactive Analytics Dashboard -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <div class="card app-card p-4 h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-bold mb-0 text-navy"><i class="fa-solid fa-chart-pie text-danger me-2"></i>Blood Group Supply Distribution</h6>
+                    <small class="text-muted">ABO & Rh Taxonomy</small>
+                </div>
+                <div style="height: 250px;">
+                    <canvas id="bloodChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card app-card p-4 h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-bold mb-0 text-navy"><i class="fa-solid fa-chart-column text-primary me-2"></i>Demographics & City Density</h6>
+                    <small class="text-muted">Regional Availability</small>
+                </div>
+                <div style="height: 250px;">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Donor Table -->
     <div class="card app-card overflow-hidden">
         <!-- Table header with search -->
@@ -215,7 +241,69 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Parse donor stats for charts
+<%
+    int op = 0, on = 0, ap = 0, an = 0, bp = 0, bn = 0, abp = 0, abn = 0;
+    java.util.Map<String, Integer> cityCounts = new java.util.HashMap<>();
+    if (donors != null) {
+        for (Donor d : donors) {
+            String bg = d.getBloodGroup();
+            if ("O+".equals(bg)) op++;
+            else if ("O-".equals(bg)) on++;
+            else if ("A+".equals(bg)) ap++;
+            else if ("A-".equals(bg)) an++;
+            else if ("B+".equals(bg)) bp++;
+            else if ("B-".equals(bg)) bn++;
+            else if ("AB+".equals(bg)) abp++;
+            else if ("AB-".equals(bg)) abn++;
+
+            String c = d.getCity() != null ? d.getCity().trim() : "Unknown";
+            cityCounts.put(c, cityCounts.getOrDefault(c, 0) + 1);
+        }
+    }
+%>
+
+// Chart 1: Blood Group Doughnut
+const ctxBlood = document.getElementById('bloodChart').getContext('2d');
+new Chart(ctxBlood, {
+    type: 'doughnut',
+    data: {
+        labels: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
+        datasets: [{
+            data: [<%= op %>, <%= on %>, <%= ap %>, <%= an %>, <%= bp %>, <%= bn %>, <%= abp %>, <%= abn %>],
+            backgroundColor: ['#e11d48', '#f43f5e', '#2563eb', '#3b82f6', '#10b981', '#34d399', '#f59e0b', '#fbbf24']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right' } }
+    }
+});
+
+// Chart 2: City Density Bar Chart
+const ctxCity = document.getElementById('cityChart').getContext('2d');
+new Chart(ctxCity, {
+    type: 'bar',
+    data: {
+        labels: [<% for (String c : cityCounts.keySet()) { %>'<%= c %>',<% } %>],
+        datasets: [{
+            label: 'Donors Registered',
+            data: [<% for (Integer cnt : cityCounts.values()) { %><%= cnt %>,<% } %>],
+            backgroundColor: '#3b82f6',
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+        plugins: { legend: { display: false } }
+    }
+});
+
 function filterTable(query) {
     const rows = document.querySelectorAll('#donorTable tbody tr');
     const q = query.toLowerCase();

@@ -170,6 +170,20 @@ public class DBConnection {
                         + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
                         + ") ENGINE=InnoDB");
 
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS emergency_requests ("
+                        + "request_id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "patient_name VARCHAR(100) NOT NULL, "
+                        + "blood_group ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL, "
+                        + "units_needed INT NOT NULL DEFAULT 1, "
+                        + "hospital_name VARCHAR(150) NOT NULL, "
+                        + "city VARCHAR(50) NOT NULL, "
+                        + "contact_person VARCHAR(100) NOT NULL, "
+                        + "contact_phone VARCHAR(15) NOT NULL, "
+                        + "urgency VARCHAR(50) NOT NULL DEFAULT 'Critical', "
+                        + "status VARCHAR(20) NOT NULL DEFAULT 'OPEN', "
+                        + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                        + ") ENGINE=InnoDB");
+
                 stmt.executeUpdate("INSERT INTO admin_users (username, password_hash, full_name) "
                         + "VALUES ('admin', '$2a$12$i1mnIQro/fBS/F9myvB7muiXTLqPdPYxuK4P/ga/vJKB4CAq0hwZe', 'System Administrator') "
                         + "ON DUPLICATE KEY UPDATE full_name=VALUES(full_name)");

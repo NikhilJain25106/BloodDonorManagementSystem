@@ -69,6 +69,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link<%= currentPage.contains("emergency") ? " active" : "" %>" href="<%= cp %>/emergency">
+                        <i class="fa-solid fa-tower-broadcast me-1 text-danger" style="font-size:0.8rem;"></i>SOS Beacon
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link<%= currentPage.contains("map") ? " active" : "" %>" href="<%= cp %>/map.jsp">
+                        <i class="fa-solid fa-map-location-dot me-1 text-primary" style="font-size:0.8rem;"></i>Map
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link<%= currentPage.contains("eligibility") ? " active" : "" %>" href="<%= cp %>/eligibility.jsp">
                         <i class="fa-solid fa-calculator me-1" style="font-size:0.8rem;"></i>Eligibility
                     </a>
