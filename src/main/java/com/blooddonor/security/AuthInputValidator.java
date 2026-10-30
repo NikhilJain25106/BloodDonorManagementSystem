@@ -112,6 +112,20 @@ public class AuthInputValidator {
     }
 
     /**
+     * Validates a 10-digit phone number.
+     */
+    public static String validatePhone(String phone) {
+        if (phone == null) {
+            throw new IllegalArgumentException("Phone number is required.");
+        }
+        String clean = phone.trim().replaceAll("[^0-9]", "");
+        if (clean.length() != 10) {
+            throw new IllegalArgumentException("Phone number must be exactly 10 digits.");
+        }
+        return clean;
+    }
+
+    /**
      * Strips all HTML/JS and harmful control characters from free-text inputs.
      * Protects against Cross-Site Scripting (XSS) and parameter pollution.
      */
