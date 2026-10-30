@@ -145,7 +145,7 @@ public class DBConnection {
             System.out.println("[LifeDrop DB] User:   " + user);
             System.out.println("=======================================================");
 
-            // Ensure starter schema and admin account exist automatically in cloud database
+            // Ensure starter schema and starter records exist automatically in cloud database
             try (Connection testConn = ds.getConnection();
                  java.sql.Statement stmt = testConn.createStatement()) {
                 stmt.executeUpdate("CREATE TABLE IF NOT EXISTS admin_users ("
@@ -174,7 +174,14 @@ public class DBConnection {
                         + "VALUES ('admin', '$2a$12$i1mnIQro/fBS/F9myvB7muiXTLqPdPYxuK4P/ga/vJKB4CAq0hwZe', 'System Administrator') "
                         + "ON DUPLICATE KEY UPDATE full_name=VALUES(full_name)");
 
-                System.out.println("[LifeDrop DB] Schema verified & default administrator ready (admin / Admin@123)!");
+                stmt.executeUpdate("INSERT IGNORE INTO donors (full_name, age, gender, blood_group, phone, email, address, city, last_donation_date) VALUES "
+                        + "('Rohan Mehta', 28, 'Male', 'O+', '9876543210', 'rohan.mehta@example.com', '12 MG Road', 'Mumbai', '2026-06-15'), "
+                        + "('Priya Sharma', 24, 'Female', 'A+', '9876543211', 'priya.sharma@example.com', '45 Park Street', 'Pune', NULL), "
+                        + "('Aman Khan', 35, 'Male', 'B-', '9876543212', 'aman.khan@example.com', '7 Lake View', 'Mumbai', '2026-03-02'), "
+                        + "('Ananya Deshmukh', 29, 'Female', 'AB+', '9876543213', 'ananya.d@example.com', '88 Bandra West', 'Mumbai', '2026-05-10'), "
+                        + "('Vikram Patel', 32, 'Male', 'O-', '9876543214', 'vikram.p@example.com', '14 Shivaji Nagar', 'Pune', '2026-04-18')");
+
+                System.out.println("[LifeDrop DB] Schema verified & starter donors seeded successfully!");
             } catch (Exception ex) {
                 System.err.println("[LifeDrop DB] Schema auto-creation notice: " + ex.getMessage());
             }
