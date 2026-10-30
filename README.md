@@ -395,7 +395,9 @@ Stores administrative authentication credentials:
 | URL Route | HTTP Method | Access Level | Description |
 |:---|:---:|:---:|:---|
 | `/` | `GET` | **Public** | Home landing page, quick search, and compatibility matrix |
-| `/health` | `GET` | **Public / Ops** | Container orchestration health probe returning JSON `{"status":"UP","service":"LifeDrop"}` |
+| `/health` | `GET` | **Public / Ops** | Container orchestration health probe returning live service & MySQL connectivity status |
+| `/db-check.jsp` | `GET` | **Public / Ops** | Real-time database diagnostic dashboard inspecting live table rows & connection metrics |
+| `/seed.jsp` | `GET` | **Public / Ops** | Automated cloud database seeder initializing tables, admin users & starter donors |
 | `/registerDonor` | `GET` / `POST` | **Public** | Form render and submission for new donor registrations with DPDP consent |
 | `/searchDonors` | `GET` | **Public** | Search and filter donors by blood group and city |
 | `/contact.jsp` | `GET` | **Public** | Healthcare helpdesk, inquiries, and Grievance Officer contacts |
@@ -493,11 +495,18 @@ LifeDrop is committed to making digital healthcare accessible to all individuals
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started & Autonomous Operations
 
 LifeDrop can be run on **any device and operating system** (Windows, macOS, Linux, Raspberry Pi, Cloud VMs) either using **Docker** (recommended — zero dependencies) or **Natively** with JDK 17 & MySQL.
 
-> 📖 **For complete multi-platform instructions, troubleshooting & FAQs, see [`SETUP.md`](SETUP.md).**
+> 📖 **For complete multi-platform instructions, troubleshooting & FAQs, see [`SETUP.md`](SETUP.md) and [`AUTONOMOUS_GUIDE.md`](AUTONOMOUS_GUIDE.md).**
+
+### 🤖 1-Click Autonomous Sync & Deploy (`auto.bat` / `auto.sh`)
+LifeDrop features an autonomous single-action pipeline that sanitizes temporary artifacts, stages all code, commits, and pushes to GitHub to trigger continuous cloud deployment:
+- **Windows:** Double-click [`auto.bat`](auto.bat) (or run `auto` in CMD)
+- **macOS / Linux:** Run `./auto.sh` or `make auto`
+
+---
 
 ### ⚡ Method A: One-Command Docker Setup (Any Device — Recommended)
 
@@ -581,8 +590,9 @@ LifeDrop is engineered for high-throughput healthcare workflows, sub-second quer
 
 ### 2. High-Performance Connection Pooling (HikariCP)
 - Replaced direct `DriverManager` connections with **HikariCP** (`LifeDropHikariPool`).
-- Configured with `maximumPoolSize=15`, `minimumIdle=3`, and connection statement caching (`cachePrepStmts=true`, `prepStmtCacheSize=250`).
-- Eliminates 30–50ms TCP handshake overhead per request and prevents database connection starvation during emergency traffic surges.
+- Configured with `maximumPoolSize=10`, `minimumIdle=1`, `initializationFailTimeout=-1`, and connection statement caching (`cachePrepStmts=true`, `prepStmtCacheSize=250`).
+- Auto-detects cloud deployments (Aiven MySQL, Render, Railway), enforces TLS encryption (`sslMode=PREFERRED`), and automatically self-heals transient network delays.
+- Auto-provisions essential schema tables (`donors`, `admin_users`) and seeds starter voluntary donor records directly upon cold start.
 
 ### 3. Load Balancing & Reverse Proxy
 - Pre-configured `nginx/nginx.conf` supporting Layer 7 load balancing with the `least_conn` algorithm.
