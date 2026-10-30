@@ -68,7 +68,6 @@ public class DBConnection {
         String jdbcUrl;
 
         boolean isCloudDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host) && !"db".equalsIgnoreCase(host));
-        String sslParam = isCloudDb ? "true" : "false";
 
         if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
             // Full URL provided (e.g. mysql://user:pass@host:port/dbname)
@@ -95,12 +94,16 @@ public class DBConnection {
                 jdbcUrl = mysqlUrl;
             }
             isCloudDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host) && !"db".equalsIgnoreCase(host));
-            sslParam = isCloudDb ? "true" : "false";
+        }
+
+        if (isCloudDb) {
+            // Modern Connector/J 9.2+ parameters for Aiven cloud MySQL
+            // Uses sslMode=REQUIRED (uppercase) and enables public key retrieval for caching_sha2_password
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?useSSL=" + sslParam + "&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+                    + "?sslMode=REQUIRED&allowPublicKeyRetrieval=true&connectTimeout=30000&socketTimeout=60000&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Kolkata";
         } else {
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?useSSL=" + sslParam + "&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+                    + "?sslMode=DISABLED&allowPublicKeyRetrieval=true&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Kolkata";
         }
 
         HikariDataSource ds = null;
@@ -112,11 +115,12 @@ public class DBConnection {
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
             // Connection pool sizing & timeouts
-            config.setMaximumPoolSize(15);
-            config.setMinimumIdle(3);
-            config.setIdleTimeout(300000);       // 5 minutes
-            config.setConnectionTimeout(20000);  // 20 seconds
-            config.setMaxLifetime(1200000);      // 20 minutes
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(1);
+            config.setInitializationFailTimeout(-1); // Prevents app crash on startup if cloud DB has a transient delay
+            config.setIdleTimeout(300000);           // 5 minutes
+            config.setConnectionTimeout(30000);      // 30 seconds
+            config.setMaxLifetime(1200000);          // 20 minutes
             config.setPoolName("LifeDropHikariPool");
 
             // MySQL statement caching optimizations

@@ -18,7 +18,9 @@ public class Main {
         }
 
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(Integer.parseInt(port));
+        int listenPort = Integer.parseInt(port);
+        tomcat.setPort(listenPort);
+        tomcat.setHostname("0.0.0.0"); // Bind explicitly to all network interfaces for cloud hosting (Render/Railway/Docker)
 
         // 2. Set safe base directory for Tomcat work/temp files
         File baseDir = new File(System.getProperty("java.io.tmpdir"), "tomcat-lifedrop");
@@ -28,6 +30,7 @@ public class Main {
         tomcat.setBaseDir(baseDir.getAbsolutePath());
 
         tomcat.getConnector(); // Initialize default HTTP connector
+        tomcat.getConnector().setProperty("address", "0.0.0.0");
 
         // 3. Resolve webapp directory with path fallbacks
         File webappDir = new File("src/main/webapp");

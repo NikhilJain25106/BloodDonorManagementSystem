@@ -3,17 +3,23 @@ setlocal
 cd /d "%~dp0"
 
 echo =========================================================
-echo   Pushing LifeDrop to GitHub for Render Deployment
+echo   Cleaning Staged Credentials & Pushing Clean Commit...
 echo =========================================================
 
+REM Undo the last local commit so we can re-commit without plaintext secrets
+git reset HEAD~1
+
+REM Stage all files (secret files are now sanitized and .env is ignored)
 git add .
-git commit -m "feat: configure automated Render deployment with render.yaml and cloud SSL DB support"
+
+REM Create fresh commit
+git commit -m "fix(render): configure sync environment variables, fix healthcheck and sanitize secrets"
+
+REM Push to GitHub
 git push origin main
 
 echo.
 echo =========================================================
-echo   Code pushed to GitHub successfully!
-echo   Render will now auto-detect render.yaml and Dockerfile.
+echo   Push completed successfully!
 echo =========================================================
-pause
-
+timeout /t 5

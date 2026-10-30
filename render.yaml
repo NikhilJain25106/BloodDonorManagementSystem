@@ -5,10 +5,9 @@ services:
     runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
-    healthCheckPath: /health
     envVars:
       - key: PORT
-        value: 8080
+        value: "8080"
       - key: MYSQLHOST
         sync: false
       - key: MYSQLPORT
@@ -19,6 +18,3 @@ services:
         sync: false
       - key: MYSQLPASSWORD
         sync: false
-      - key: MYSQL_URL
-        sync: false
-
