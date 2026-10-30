@@ -25,7 +25,7 @@ echo [OK] Files staged.
 
 echo.
 echo [4/4] Synchronizing with GitHub...
-git commit -m "chore(auto): autonomous full-stack sync, documentation, and cloud deployment updates" >nul 2>&1
+git commit -m "feat: add interactive clinical eligibility calculator, WhatsApp/Call action triggers, and admin CSV export" >nul 2>&1
 
 echo Attempting push to origin main...
 git push origin main

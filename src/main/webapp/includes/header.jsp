@@ -69,6 +69,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link<%= currentPage.contains("eligibility") ? " active" : "" %>" href="<%= cp %>/eligibility.jsp">
+                        <i class="fa-solid fa-calculator me-1" style="font-size:0.8rem;"></i>Eligibility
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link<%= currentPage.contains("contact") ? " active" : "" %>" href="<%= cp %>/contact.jsp">
                         <i class="fa-solid fa-envelope me-1" style="font-size:0.8rem;"></i>Contact
                     </a>

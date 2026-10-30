@@ -20,7 +20,7 @@ import java.io.IOException;
  * logged-out users. Hiding a link in the UI is not security; the
  * server must refuse the request itself. This filter is that refusal.
  */
-@WebFilter(urlPatterns = { "/adminDashboard", "/deleteDonor", "/updateDonor", "/editDonor" })
+@WebFilter(urlPatterns = { "/adminDashboard", "/deleteDonor", "/updateDonor", "/editDonor", "/exportDonors" })
 public class AdminAuthFilter implements Filter {
 
     @Override

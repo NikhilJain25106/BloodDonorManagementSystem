@@ -30,11 +30,18 @@
                     <p class="page-hero-sub">Welcome back, <strong style="color:#fff;"><%= session.getAttribute("adminFullName") %></strong></p>
                 </div>
             </div>
-            <a href="<%= request.getContextPath() %>/adminLogout"
-               class="btn btn-outline-secondary btn-sm"
-               style="border-radius:10px;font-weight:600;color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);font-size:0.85rem;padding:0.5rem 1.1rem;">
-                <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
-            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="<%= request.getContextPath() %>/exportDonors"
+                   class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm"
+                   style="border-radius:10px;font-weight:600;font-size:0.85rem;padding:0.5rem 1.1rem;">
+                    <i class="fa-solid fa-file-csv"></i> Export CSV
+                </a>
+                <a href="<%= request.getContextPath() %>/adminLogout"
+                   class="btn btn-outline-secondary btn-sm"
+                   style="border-radius:10px;font-weight:600;color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);font-size:0.85rem;padding:0.5rem 1.1rem;">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                </a>
+            </div>
         </div>
     </div>
 </section>

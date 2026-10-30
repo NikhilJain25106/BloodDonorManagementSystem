@@ -28,6 +28,9 @@
                     <a href="<%= cp %>/registerDonor" class="btn-hero-primary">
                         <i class="fa-solid fa-hand-holding-heart"></i> Become a Donor
                     </a>
+                    <a href="<%= cp %>/eligibility.jsp" class="btn-hero-secondary" style="border:1.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);">
+                        <i class="fa-solid fa-calculator"></i> Check Eligibility
+                    </a>
                     <a href="<%= cp %>/donorLogin" class="btn-hero-secondary">
                         <i class="fa-solid fa-id-card"></i> My Donor Card
                     </a>
