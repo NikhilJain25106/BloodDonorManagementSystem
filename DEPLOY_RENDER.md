@@ -17,7 +17,7 @@ Render reads [`render.yaml`](render.yaml) automatically, sets port 8080, and con
 ### Step 2: Set Database Environment Variable in Render
 In your **Render Dashboard** -> **Environment**:
 Add either `MYSQL_URL` or the individual database parameters:
-- `MYSQL_URL`: `mysql://avnadmin:AVNS_lHp0SNhnO1zx8LYPSo_@mysql-33813183-lifedropbm-77.a.aivencloud.com:22772/defaultdb?ssl-mode=REQUIRED`
+- `MYSQL_URL`: `mysql://avnadmin:YOUR_AIVEN_PASSWORD@mysql-33813183-lifedropbm-77.a.aivencloud.com:22772/defaultdb?ssl-mode=REQUIRED`
 
 ---
 
