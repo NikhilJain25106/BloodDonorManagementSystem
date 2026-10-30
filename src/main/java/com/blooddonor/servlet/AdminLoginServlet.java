@@ -157,7 +157,8 @@ public class AdminLoginServlet extends HttpServlet {
 
         } catch (SQLException e) {
             System.err.println("Database error during admin authentication: " + e.getMessage());
-            request.setAttribute("errorMessage", "Authentication service temporarily unavailable. Please try again.");
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Database Connection Error: " + e.getMessage());
             request.getRequestDispatcher("admin-login.jsp").forward(request, response);
         }
     }
