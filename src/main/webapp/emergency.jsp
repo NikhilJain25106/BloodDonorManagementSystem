@@ -63,7 +63,7 @@
 
                 <div class="bg-light p-3 rounded-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div style="font-size:0.88rem;">
-                        <span class="text-muted">Contact:</span> <strong><%= reqItem.getContactPerson() %></strong> 
+                        <span class="text-muted">Contact:</span> <strong><%= reqItem.getContactPerson() %></strong>
                         (<a href="tel:<%= reqItem.getContactPhone() %>" class="text-decoration-none fw-bold"><%= reqItem.getContactPhone() %></a>)
                     </div>
                     <div class="d-flex gap-2">
@@ -182,3 +182,4 @@
 </div>
 
 <%@ include file="includes/footer.jsp" %>
+
