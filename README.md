@@ -9,7 +9,8 @@
 [![Tomcat](https://img.shields.io/badge/Apache_Tomcat-9.0-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=black)](https://tomcat.apache.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![Maven](https://img.shields.io/badge/Maven-3.9-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
-[![Railway](https://img.shields.io/badge/Deployed-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
+[![Render](https://img.shields.io/badge/Deployed-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://lifedrop-app-k6ef.onrender.com)
+[![Aiven](https://img.shields.io/badge/Database-Aiven_MySQL-FF3E00?style=for-the-badge&logo=aiven&logoColor=white)](https://aiven.io/)
 [![CI](https://img.shields.io/github/actions/workflow/status/NikhilJain25106/BloodDonorManagementSystem/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI%20Build)](https://github.com/NikhilJain25106/BloodDonorManagementSystem/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![DPDP Act](https://img.shields.io/badge/DPDP_Act_2023-Compliant-059669?style=for-the-badge)](privacy.jsp)
@@ -18,7 +19,7 @@
 
 <br/>
 
-[**Explore Live Demo »**](https://lifedrop-app.up.railway.app) · [**Academic Project Report »**](PROJECT_REPORT.md) · [**Report Bug**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=bug_report.md) · [**Request Feature**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=feature_request.md)
+[**Explore Live Demo (Render) »**](https://lifedrop-app-k6ef.onrender.com) · [**Academic Project Report »**](PROJECT_REPORT.md) · [**Report Bug**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=bug_report.md) · [**Request Feature**](https://github.com/NikhilJain25106/BloodDonorManagementSystem/issues/new?template=feature_request.md)
 
 </div>
 
@@ -43,17 +44,12 @@
 - [Security Hardening & Defense-in-Depth](#-security-hardening--defense-in-depth)
 - [Legal, Privacy & Regulatory Compliance (DPDP Act 2023)](#-legal-privacy--regulatory-compliance-dpdp-act-2023)
 - [Accessibility & Inclusive Design (WCAG 2.1 AA)](#-accessibility--inclusive-design-wcag-21-aa)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Step 1: Clone Repository](#step-1--clone-repository)
-  - [Step 2: Database Setup](#step-2--database-setup)
-  - [Step 3: Environment Configuration](#step-3--environment-configuration)
-  - [Step 4: Seed Admin Credentials](#step-4--seed-admin-credentials)
-  - [Step 5: Build & Run Executable JAR](#step-5--build--run-executable-jar)
-  - [Step 6: Access the Application](#step-6--access-the-application)
+- [Getting Started & Multi-Device Execution](#-getting-started--multi-device-execution)
+  - [Option A: 1-Click Docker Setup (Recommended)](#option-a-1-click-docker-setup-recommended-for-any-device)
+  - [Option B: Native Setup (Without Docker)](#option-b-native-setup-without-docker)
 - [High-Performance Architecture & Scaling](#-high-performance-architecture--scaling)
 - [Automated Testing & Quality Assurance](#-automated-testing--quality-assurance)
-- [Cloud Deployment (Railway)](#-cloud-deployment-railway)
+- [Cloud Deployment (Render + Aiven MySQL)](#-cloud-deployment-render--aiven-mysql)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Author & Acknowledgments](#-author--acknowledgments)
@@ -64,11 +60,13 @@
 
 | Resource | URL / Credentials | Notes |
 |:---|:---|:---|
-| **Live Application** | [lifedrop-app.up.railway.app](https://lifedrop-app.up.railway.app) | Hosted on Railway with cloud MySQL |
+| **Live Production Web App** | [lifedrop-app-k6ef.onrender.com](https://lifedrop-app-k6ef.onrender.com) | Deployed on Render with SSL & zero-downtime |
+| **Live Cloud Database** | Aiven for MySQL (Cloud Cluster) | Fully managed MySQL 8.0 with automated TLS |
+| **Live DB Health & Diagnostic** | [/db-check.jsp](https://lifedrop-app-k6ef.onrender.com/db-check.jsp) | Real-time database metrics & live table rows |
 | **GitHub Repository** | [NikhilJain25106/BloodDonorManagementSystem](https://github.com/NikhilJain25106/BloodDonorManagementSystem) | Primary open-source repository |
-| **Technical Documentation** | [`PROJECT_REPORT.md`](PROJECT_REPORT.md) &nbsp;\|&nbsp; [Word Report (.docx)](LifeDrop_Mini_Project_Report.docx) | Formal academic project documentation & analysis |
 | **Admin Portal** | Username: `admin` &nbsp;\|&nbsp; Password: `Admin@123` | Accessible at `/adminLogin` |
 | **Sample Donor Login** | Identifier: `rohan.mehta@example.com` or `9876543210` | Accessible at `/donorLogin` |
+| **Technical Documentation** | [`PROJECT_REPORT.md`](PROJECT_REPORT.md) &nbsp;\|&nbsp; [Word Report (.docx)](LifeDrop_Mini_Project_Report.docx) | Formal academic project documentation & analysis |
 
 ---
 
@@ -341,6 +339,7 @@ BloodDonorManagementSystem/
 ├── PROJECT_REPORT.md                 # Complete technical mini-project documentation
 ├── railway.toml                      # Railway deployment configuration
 ├── README.md                         # Project documentation
+├── render.yaml                       # Automated Render cloud deployment blueprint
 ├── run.bat                           # 1-click Windows runner script
 ├── run.sh                            # 1-click Linux / macOS / WSL runner script
 ├── SECURITY.md                       # Security policy and vulnerability disclosure
@@ -636,7 +635,7 @@ Every commit and pull request pushed to `main` triggers GitHub Actions (`.github
 
 ## ☁️ Containerization & Cloud Deployment
 
-### Multi-Stage Dockerfile
+### 1. Multi-Stage Production Dockerfile
 A lightweight, secure production `Dockerfile` is included:
 ```bash
 # Build Docker image
@@ -646,14 +645,18 @@ docker build -t lifedrop:latest .
 docker run -p 8080:8080 -e MYSQLHOST=host.docker.internal -e MYSQLDATABASE=blood_donor_db lifedrop:latest
 ```
 - Multi-stage build separates the Maven build environment from the minimal Alpine JRE runtime.
-- Runs under an unprivileged user (`lifedropuser`) for enhanced container isolation.
-- Tuned JVM ergonomics: `-XX:+UseG1GC`, `-XX:MaxRAMPercentage=75.0`, and `-XX:+ExitOnOutOfMemoryError`.
+- Runs under an unprivileged user (`lifedropuser`) for defensive container isolation.
+- Tuned JVM ergonomics: `-XX:+UseG1GC`, `-XX:MaxRAMPercentage=75.0`, `-XX:+ExitOnOutOfMemoryError`, and non-blocking entropy `-Djava.security.egd=file:/dev/./urandom`.
 
-### Cloud Deployment (Railway)
-LifeDrop is pre-configured for automated continuous deployment on [Railway](https://railway.app):
-- **Build Provider:** Nixpacks automatically detects OpenJDK 17 and Maven via `nixpacks.toml`.
-- **Zero Configuration:** `DBConnection.java` detects Railway's environment variables (`MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE`, `MYSQL_URL`) and initializes HikariCP automatically.
-- **Auto Deployments:** Pushing commits to `main` triggers immediate build, test, and zero-downtime redeployment.
+### 2. Free Cloud Deployment (Render + Aiven Cloud MySQL)
+LifeDrop is pre-configured for automated continuous deployment on **[Render](https://render.com)** using a dedicated **[Aiven for MySQL](https://aiven.io)** cloud cluster:
+- **Render Web Service:** Automatically configured via `render.yaml` and `Dockerfile`.
+- **Aiven Cloud MySQL:** Managed 8.0 cluster with automated TLS/SSL encryption.
+- **Connection Resiliency:** `DBConnection.java` auto-negotiates SSL (`sslMode=PREFERRED`), auto-seeds starter tables (`admin_users`, `donors`) on cold start, and reconnects seamlessly.
+- **Live Deployment Link:** [https://lifedrop-app-k6ef.onrender.com](https://lifedrop-app-k6ef.onrender.com)
+- **Live Diagnostic Probe:** [https://lifedrop-app-k6ef.onrender.com/db-check.jsp](https://lifedrop-app-k6ef.onrender.com/db-check.jsp)
+
+---
 
 ## 🤝 Contributing
 
