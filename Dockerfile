@@ -9,7 +9,7 @@ WORKDIR /build
 
 # Cache dependency layer
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN mvn dependency:go-offline -B || true
 
 # Compile and package fat JAR
 COPY src ./src
@@ -18,6 +18,9 @@ RUN mvn clean package -DskipTests -B
 # Stage 2: Minimal, secure JRE 17 runtime
 FROM eclipse-temurin:17-jre-alpine AS runtime
 WORKDIR /app
+
+# Install curl for container health checking and diagnosis
+RUN apk add --no-cache curl
 
 # Run as non-privileged system user for defensive container security
 RUN addgroup -S lifedropgroup && adduser -S lifedropuser -G lifedropgroup

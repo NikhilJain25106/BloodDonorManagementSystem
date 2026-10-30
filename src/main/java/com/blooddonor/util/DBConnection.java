@@ -15,13 +15,24 @@ import java.sql.SQLException;
  */
 public class DBConnection {
 
-    private static final HikariDataSource dataSource;
+    private static volatile HikariDataSource dataSource;
 
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("MySQL JDBC Driver not found.", e);
+        }
+        initDataSource();
+    }
+
+    /**
+     * Initializes or re-initializes the HikariCP connection pool.
+     * Synchronized to guarantee thread-safe idempotent startup.
+     */
+    public static synchronized void initDataSource() {
+        if (dataSource != null && !dataSource.isClosed()) {
+            return;
         }
 
         java.util.Map<String, String> dotenv = loadDotEnv();
@@ -49,7 +60,7 @@ public class DBConnection {
 
         String host = (mysqlHost != null && !mysqlHost.isEmpty()) ? mysqlHost : "localhost";
         String port = (mysqlPort != null && !mysqlPort.isEmpty()) ? mysqlPort : "3306";
-        String defaultDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host)) ? "railway" : "blood_donor_db";
+        String defaultDb = (host != null && host.toLowerCase().contains("railway")) ? "railway" : "blood_donor_db";
         String database = (mysqlDatabase != null && !mysqlDatabase.isEmpty()) ? mysqlDatabase : defaultDb;
         String user = (mysqlUser != null && !mysqlUser.isEmpty()) ? mysqlUser : "root";
         String password = (mysqlPassword != null) ? mysqlPassword : "@NikhilJain25107045";
@@ -134,16 +145,16 @@ public class DBConnection {
      */
     private static String getEnvOrProp(String key, java.util.Map<String, String> dotenv) {
         String val = System.getenv(key);
-        if (val != null && !val.trim().isEmpty()) {
+        if (val != null) {
             return val.trim();
         }
         val = System.getProperty(key);
-        if (val != null && !val.trim().isEmpty()) {
+        if (val != null) {
             return val.trim();
         }
         if (dotenv != null && dotenv.containsKey(key)) {
             val = dotenv.get(key);
-            if (val != null && !val.trim().isEmpty()) {
+            if (val != null) {
                 return val.trim();
             }
         }
@@ -192,8 +203,12 @@ public class DBConnection {
 
     /**
      * Borrows an active connection from the HikariCP connection pool.
+     * Automatically attempts to initialize the pool if it hasn't connected yet.
      */
     public static Connection getConnection() throws SQLException {
+        if (dataSource == null || dataSource.isClosed()) {
+            initDataSource();
+        }
         if (dataSource == null) {
             throw new SQLException("Database connection pool is not initialized. Please verify MySQL configuration.");
         }

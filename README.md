@@ -329,16 +329,23 @@ BloodDonorManagementSystem/
 ├── CODE_OF_CONDUCT.md                # Community participation guidelines
 ├── CONTRIBUTING.md                    # Contribution rules and branch workflow
 ├── dfd_diagram.png                   # Data Flow Diagram (DFD Level 0 & Level 1)
+├── docker-compose.yml                # Multi-container Docker configuration (App + MySQL)
+├── Dockerfile                        # Multi-stage production container build
 ├── er_diagram.png                    # Entity-Relationship (ER) database model
 ├── LICENSE                           # MIT License
 ├── LifeDrop_Mini_Project_Report.docx # Formatted academic report submission document
+├── Makefile                          # Cross-platform developer automation commands
 ├── nixpacks.toml                     # Nixpacks build definition for Railway
 ├── pom.xml                           # Maven dependencies, plugins, and fat JAR build
 ├── Procfile                          # Cloud process execution command
 ├── PROJECT_REPORT.md                 # Complete technical mini-project documentation
 ├── railway.toml                      # Railway deployment configuration
 ├── README.md                         # Project documentation
-└── SECURITY.md                       # Security policy and vulnerability disclosure
+├── run.bat                           # 1-click Windows runner script
+├── run.sh                            # 1-click Linux / macOS / WSL runner script
+├── SECURITY.md                       # Security policy and vulnerability disclosure
+├── SETUP.md                          # Multi-platform setup and troubleshooting guide
+└── start-server.bat                  # Windows native server starter
 ```
 
 ---
@@ -489,84 +496,78 @@ LifeDrop is committed to making digital healthcare accessible to all individuals
 
 ## 🚀 Getting Started
 
-Follow these steps to set up and run LifeDrop locally on your development machine.
+LifeDrop can be run on **any device and operating system** (Windows, macOS, Linux, Raspberry Pi, Cloud VMs) either using **Docker** (recommended — zero dependencies) or **Natively** with JDK 17 & MySQL.
 
-### Prerequisites
+> 📖 **For complete multi-platform instructions, troubleshooting & FAQs, see [`SETUP.md`](SETUP.md).**
+
+### ⚡ Method A: One-Command Docker Setup (Any Device — Recommended)
+
+No need to install Java, Maven, or MySQL on your system! Docker automatically runs MySQL 8.0, sets up the database schema, builds the fat JAR, and launches embedded Tomcat:
+
+```bash
+# Clone the repository
+git clone https://github.com/NikhilJain25106/BloodDonorManagementSystem.git
+cd BloodDonorManagementSystem
+
+# Start application and database with 1 command:
+docker compose up --build -d
+```
+
+*(On Windows, you can simply run `run.bat`; on Linux/macOS, run `./run.sh`)*
+
+Open **[http://localhost:8080/](http://localhost:8080/)** in your browser.
+
+---
+
+### 💻 Method B: Native Setup (Without Docker)
+
+#### Prerequisites
 - **Java Development Kit (JDK):** Version 17 LTS or higher installed and added to `PATH`.
 - **Apache Maven:** Version 3.9+ installed and added to `PATH`.
 - **MySQL Server:** Version 8.0 or higher running locally on port `3306`.
 - **Git:** Installed on your workstation.
 
-### Step 1: Clone Repository
+#### Step 1: Clone Repository
 ```bash
 git clone https://github.com/NikhilJain25106/BloodDonorManagementSystem.git
 cd BloodDonorManagementSystem
 ```
 
-### Step 2: Database Setup
-1. Log into your local MySQL CLI or MySQL Workbench:
-   ```bash
-   mysql -u root -p
-   ```
-2. Execute the schema migration script located in `database/schema.sql`:
-   ```bash
-   mysql -u root -p < database/schema.sql
-   ```
-   *This automatically creates `blood_donor_db`, generates the `donors` and `admin_users` tables, and seeds initial sample records.*
-
-### Step 3: Environment Configuration
-LifeDrop dynamically detects database credentials from environment variables or falls back to local configuration defaults. 
-
-Create a `.env` file in the root directory (or set environment variables):
-```ini
-# Server Port (default 8080)
-PORT=8080
-
-# Database Connection Details
-MYSQLHOST=localhost
-MYSQLPORT=3306
-MYSQLDATABASE=blood_donor_db
-MYSQLUSER=root
-MYSQLPASSWORD=your_mysql_password
-```
-
-### Step 4: Seed Admin Credentials
-To generate a custom admin account with a secure BCrypt hash:
+#### Step 2: Database Setup
+Execute the schema migration script located in `database/schema.sql`:
 ```bash
-# Compile and run the helper generator
-mvn test-compile
-java -cp "target/classes;target/test-classes" com.blooddonor.util.GenerateAdminHash
+mysql -u root -p < database/schema.sql
 ```
-Alternatively, insert the default admin user directly:
-```sql
-USE blood_donor_db;
-INSERT INTO admin_users (username, password_hash, full_name)
-VALUES ('admin', '$2a$10$wNqV7qf8yq8Xo7ZtW3kY1eI6l8k2Xw8f1z6K7l5Q0n3p4m5o6r7s8', 'Super Administrator')
-ON DUPLICATE KEY UPDATE username=username;
-```
-*(Default test credentials: **username:** `admin` | **password:** `Admin@123`)*
+*(On Windows PowerShell: `Get-Content database/schema.sql | mysql -u root -p`)*
 
-### Step 5: Build & Run Executable JAR
-The project compiles into an executable fat JAR using embedded Apache Tomcat:
-
+#### Step 3: Environment Configuration
+Copy `.env.example` to `.env` and specify your MySQL credentials:
 ```bash
-# 1. Run tests and package application
-mvn clean package
+# Windows
+copy .env.example .env
 
-# 2. Launch the embedded Tomcat server
-java -jar target/BloodDonorManagementSystem.jar
+# macOS / Linux
+cp .env.example .env
 ```
 
-Alternatively, on Windows you can start the development server using:
-```cmd
-start-server.bat
-```
+#### Step 4: Build & Run Executable JAR
+```bash
+# Compile and package application
+mvn clean package -DskipTests
 
-### Step 6: Access the Application
+# Launch embedded Tomcat server
+java -XX:+UseG1GC -Djava.awt.headless=true -jar target/BloodDonorManagementSystem.jar
+```
+*(On Windows, you can also run `run.bat --native` or `start-server.bat`)*
+
+#### Step 5: Access the Application
 Open your web browser and navigate to:
 ```text
 http://localhost:8080/
 ```
+
+- **Admin Login:** [http://localhost:8080/adminLogin](http://localhost:8080/adminLogin) (`admin` / `Admin@123`)
+- **Donor Login:** [http://localhost:8080/donorLogin](http://localhost:8080/donorLogin) (`rohan.mehta@example.com` / `9876543210`)
 
 ---
 

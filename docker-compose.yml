@@ -1,0 +1,69 @@
+services:
+  # =========================================================================
+  # LifeDrop MySQL 8.0 Database Service
+  # Automatically initializes schema, tables, indexes, and seed admin user
+  # =========================================================================
+  db:
+    image: mysql:8.0
+    container_name: lifedrop-mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQLDATABASE:-blood_donor_db}
+      MYSQL_USER: ${MYSQLUSER:-lifedrop}
+      MYSQL_PASSWORD: ${MYSQLPASSWORD:-lifedroppassword}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD:-rootpassword} || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks:
+      - lifedrop-network
+
+  # =========================================================================
+  # LifeDrop Java Application Service (Embedded Tomcat 9 + OpenJDK 17)
+  # Multi-stage container build with self-healing health check
+  # =========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lifedrop-web
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      PORT: "8080"
+      MYSQLHOST: "db"
+      MYSQLPORT: "3306"
+      MYSQLDATABASE: ${MYSQLDATABASE:-blood_donor_db}
+      MYSQLUSER: ${MYSQLUSER:-lifedrop}
+      MYSQLPASSWORD: ${MYSQLPASSWORD:-lifedroppassword}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 25s
+    networks:
+      - lifedrop-network
+
+volumes:
+  mysql_data:
+    name: lifedrop_mysql_data
+
+networks:
+  lifedrop-network:
+    name: lifedrop_network
+    driver: bridge
+
