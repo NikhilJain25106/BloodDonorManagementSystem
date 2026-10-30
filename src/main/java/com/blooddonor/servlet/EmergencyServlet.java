@@ -27,7 +27,7 @@ public class EmergencyServlet extends HttpServlet {
         } catch (SQLException e) {
             request.setAttribute("errorMessage", "Failed to load emergency broadcasts: " + e.getMessage());
         }
-        request.getRequestDispatcher("emergency.jsp").forward(request, response);
+        request.getRequestDispatcher("/emergency.jsp").forward(request, response);
     }
 
     @Override

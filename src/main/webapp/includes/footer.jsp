@@ -40,9 +40,13 @@
                 <h6 class="text-white fw-700 mb-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;">Navigation</h6>
                 <div class="d-flex flex-column">
                     <a href="<%= cp %>/index.jsp" class="footer-link"><i class="fa-solid fa-house" style="width:14px;" aria-hidden="true"></i>Home</a>
+                    <a href="<%= cp %>/emergency" class="footer-link"><i class="fa-solid fa-tower-broadcast text-danger" style="width:14px;" aria-hidden="true"></i>SOS Emergency</a>
+                    <a href="<%= cp %>/map.jsp" class="footer-link"><i class="fa-solid fa-map-location-dot text-primary" style="width:14px;" aria-hidden="true"></i>Live Donor Map</a>
+                    <a href="<%= cp %>/eligibility.jsp" class="footer-link"><i class="fa-solid fa-calculator" style="width:14px;" aria-hidden="true"></i>Eligibility Check</a>
                     <a href="<%= cp %>/registerDonor" class="footer-link"><i class="fa-solid fa-user-plus" style="width:14px;" aria-hidden="true"></i>Register as Donor</a>
                     <a href="<%= cp %>/searchDonors" class="footer-link"><i class="fa-solid fa-magnifying-glass" style="width:14px;" aria-hidden="true"></i>Search Donors</a>
                     <a href="<%= cp %>/donorLogin" class="footer-link"><i class="fa-solid fa-id-card" style="width:14px;" aria-hidden="true"></i>Donor Card Login</a>
+                    <a href="<%= cp %>/reminders.jsp" class="footer-link"><i class="fa-solid fa-clock-rotate-left text-success" style="width:14px;" aria-hidden="true"></i>Renewal Alerts</a>
                 </div>
             </div>
             <div class="col-lg-4">

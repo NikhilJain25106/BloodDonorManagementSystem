@@ -31,6 +31,11 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <a href="<%= request.getContextPath() %>/reminders.jsp"
+                   class="btn btn-warning btn-sm d-flex align-items-center gap-1 shadow-sm text-dark fw-bold"
+                   style="border-radius:10px;font-size:0.85rem;padding:0.5rem 1.1rem;">
+                    <i class="fa-solid fa-bell"></i> Reminders
+                </a>
                 <a href="<%= request.getContextPath() %>/exportDonors"
                    class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm"
                    style="border-radius:10px;font-weight:600;font-size:0.85rem;padding:0.5rem 1.1rem;">
@@ -288,7 +293,7 @@ const ctxCity = document.getElementById('cityChart').getContext('2d');
 new Chart(ctxCity, {
     type: 'bar',
     data: {
-        labels: [<% for (String c : cityCounts.keySet()) { %>'<%= c %>',<% } %>],
+        labels: [<% for (String c : cityCounts.keySet()) { %>'<%= c.replace("\\", "\\\\").replace("'", "\\'") %>',<% } %>],
         datasets: [{
             label: 'Donors Registered',
             data: [<% for (Integer cnt : cityCounts.values()) { %><%= cnt %>,<% } %>],

@@ -22,6 +22,13 @@
 </section>
 
 <div class="container py-5">
+    <% if (request.getAttribute("errorMessage") != null) { %>
+        <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <%= request.getAttribute("errorMessage") %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
     <% if ("success".equals(request.getParameter("broadcast"))) { %>
         <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
             <i class="fa-solid fa-circle-check me-2"></i>
@@ -44,15 +51,19 @@
                 List<EmergencyRequest> list = (List<EmergencyRequest>) request.getAttribute("activeRequests");
                 if (list != null && !list.isEmpty()) {
                     for (EmergencyRequest reqItem : list) {
+                String contactPhone = reqItem.getContactPhone() != null ? reqItem.getContactPhone() : "";
+                String cleanPhone = contactPhone.replaceAll("[^0-9]", "");
+                String contactPerson = reqItem.getContactPerson() != null ? reqItem.getContactPerson() : "Contact";
+                String bloodGroup = reqItem.getBloodGroup() != null ? reqItem.getBloodGroup() : "";
             %>
             <div class="card app-card p-4 mb-3 border-start border-4 border-danger shadow-sm">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
                     <div class="d-flex align-items-center gap-3">
                         <span class="blood-badge" style="font-size:1.3rem;width:55px;height:55px;">
-                            <%= reqItem.getBloodGroup() %>
+                            <%= bloodGroup %>
                         </span>
                         <div>
-                            <h5 class="fw-bold mb-0 text-navy"><%= reqItem.getPatientName() %></h5>
+                            <h5 class="fw-bold mb-0 text-navy"><%= reqItem.getPatientName() != null ? reqItem.getPatientName() : "Emergency Patient" %></h5>
                             <small class="text-muted"><i class="fa-solid fa-hospital me-1 text-danger"></i><%= reqItem.getHospitalName() %>, <strong><%= reqItem.getCity() %></strong></small>
                         </div>
                     </div>
@@ -63,14 +74,14 @@
 
                 <div class="bg-light p-3 rounded-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div style="font-size:0.88rem;">
-                        <span class="text-muted">Contact:</span> <strong><%= reqItem.getContactPerson() %></strong>
-                        (<a href="tel:<%= reqItem.getContactPhone() %>" class="text-decoration-none fw-bold"><%= reqItem.getContactPhone() %></a>)
+                        <span class="text-muted">Contact:</span> <strong><%= contactPerson %></strong>
+                        (<a href="tel:<%= contactPhone %>" class="text-decoration-none fw-bold"><%= contactPhone %></a>)
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="tel:<%= reqItem.getContactPhone() %>" class="btn btn-sm btn-outline-danger px-3">
+                        <a href="tel:<%= contactPhone %>" class="btn btn-sm btn-outline-danger px-3">
                             <i class="fa-solid fa-phone me-1"></i> Call Hospital
                         </a>
-                        <a href="https://wa.me/91<%= reqItem.getContactPhone().replaceAll("[^0-9]","") %>?text=Hello%20<%= java.net.URLEncoder.encode(reqItem.getContactPerson(), "UTF-8") %>,%20I%20saw%20your%20emergency%20request%20for%20<%= reqItem.getBloodGroup() %>%20on%20LifeDrop%20and%20I%20am%20ready%20to%20help."
+                        <a href="https://wa.me/91<%= cleanPhone %>?text=Hello%20<%= java.net.URLEncoder.encode(contactPerson, "UTF-8") %>,%20I%20saw%20your%20emergency%20request%20for%20<%= java.net.URLEncoder.encode(bloodGroup, "UTF-8") %>%20on%20LifeDrop%20and%20I%20am%20ready%20to%20help."
                            target="_blank" rel="noopener noreferrer"
                            class="btn btn-sm btn-success px-3" style="background:#25D366;border-color:#25D366;">
                             <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp
@@ -104,7 +115,7 @@
                 <i class="fa-solid fa-map-location-dot fa-2x text-primary mb-2"></i>
                 <h6 class="fw-bold text-navy">Interactive Donor Map</h6>
                 <p class="text-muted small mb-3">Locate verified blood banks and donor clusters near your hospital.</p>
-                <a href="map.jsp" class="btn btn-outline-primary btn-sm w-100">
+                <a href="<%= request.getContextPath() %>/map.jsp" class="btn btn-outline-primary btn-sm w-100">
                     <i class="fa-solid fa-earth-asia me-1"></i> Open Proximity Map
                 </a>
             </div>

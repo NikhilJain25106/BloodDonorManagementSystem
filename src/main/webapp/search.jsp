@@ -128,10 +128,16 @@
 
                         <!-- Contact CTA -->
                         <div class="mt-3 pt-3 d-flex gap-2" style="border-top:1px solid #f3f4f6;">
-                            <a href="tel:<%= donor.getPhone() %>" class="btn btn-sm btn-outline-danger flex-fill" style="font-size:0.8rem;border-radius:8px;">
+                            <%
+                                String dPhone = donor.getPhone() != null ? donor.getPhone() : "";
+                                String dCleanPhone = dPhone.replaceAll("[^0-9]", "");
+                                String dName = donor.getFullName() != null ? donor.getFullName() : "Donor";
+                                String dBlood = donor.getBloodGroup() != null ? donor.getBloodGroup() : "";
+                            %>
+                            <a href="tel:<%= dPhone %>" class="btn btn-sm btn-outline-danger flex-fill" style="font-size:0.8rem;border-radius:8px;">
                                 <i class="fa-solid fa-phone me-1"></i> Call
                             </a>
-                            <a href="https://wa.me/91<%= donor.getPhone().replaceAll("[^0-9]", "") %>?text=Hello%20<%= java.net.URLEncoder.encode(donor.getFullName(), "UTF-8") %>,%20I%20found%20your%20profile%20on%20LifeDrop%20and%20urgently%20need%20<%= donor.getBloodGroup() %>%20blood%20donation." 
+                            <a href="https://wa.me/91<%= dCleanPhone %>?text=Hello%20<%= java.net.URLEncoder.encode(dName, "UTF-8") %>,%20I%20found%20your%20profile%20on%20LifeDrop%20and%20urgently%20need%20<%= java.net.URLEncoder.encode(dBlood, "UTF-8") %>%20blood%20donation." 
                                target="_blank" rel="noopener noreferrer" 
                                class="btn btn-sm btn-success flex-fill" style="font-size:0.8rem;border-radius:8px;background:#25D366;border-color:#25D366;">
                                 <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp

@@ -34,7 +34,8 @@
   - [1. Public Healthcare Portal](#1-public-healthcare-portal)
   - [2. Donor Self-Service Portal](#2-donor-self-service-portal)
   - [3. Secure Admin Management System](#3-secure-admin-management-system)
-  - [4. Platform Governance & PWA](#4-platform-governance--pwa)
+  - [4. Emergency & Geolocation Innovations](#4-emergency--geolocation-innovations)
+  - [5. Platform Governance & PWA](#5-platform-governance--pwa)
 - [Application Screenshots](#-application-screenshots)
 - [System Architecture & Visual Diagrams](#-system-architecture--visual-diagrams)
 - [Technology Stack](#-technology-stack)
@@ -61,6 +62,10 @@
 | Resource | URL / Credentials | Notes |
 |:---|:---|:---|
 | **Live Production Web App** | [lifedrop-app-k6ef.onrender.com](https://lifedrop-app-k6ef.onrender.com) | Deployed on Render with SSL & zero-downtime |
+| **🚨 SOS Emergency Beacon** | [/emergency](https://lifedrop-app-k6ef.onrender.com/emergency) | Real-time emergency blood requests & instant dispatch |
+| **📍 Interactive Proximity Map** | [/map.jsp](https://lifedrop-app-k6ef.onrender.com/map.jsp) | Leaflet.js locator with GPS auto-detection & 3km radius |
+| **🧮 Eligibility Calculator** | [/eligibility.jsp](https://lifedrop-app-k6ef.onrender.com/eligibility.jsp) | Clinical weight/age check & next eligible donation date |
+| **📲 Renewal Reminders** | [/reminders.jsp](https://lifedrop-app-k6ef.onrender.com/reminders.jsp) | 90/120-day interval tracking & 1-click WhatsApp pings |
 | **Live Cloud Database** | Aiven for MySQL (Cloud Cluster) | Fully managed MySQL 8.0 with automated TLS |
 | **Live DB Health & Diagnostic** | [/db-check.jsp](https://lifedrop-app-k6ef.onrender.com/db-check.jsp) | Real-time database metrics & live table rows |
 | **GitHub Repository** | [NikhilJain25106/BloodDonorManagementSystem](https://github.com/NikhilJain25106/BloodDonorManagementSystem) | Primary open-source repository |
@@ -119,12 +124,21 @@ The full project report is published directly within the repository in both mark
 ### 3. Secure Admin Management System
 - **BCrypt Password Authentication:** Salted cryptographic password verification via `jBCrypt`.
 - **Centralized Security Filter:** `AdminAuthFilter` intercepts and enforces authentication across all protected admin servlets and JSPs.
+- **Chart.js Visual Analytics:** Real-time visual data displays including an ABO & Rh taxonomy doughnut chart and municipal donor density bar chart.
 - **Live Directory & Metrics:** Real-time summary statistics, donor count, and complete donor directory.
 - **Full CRUD Management:** View, edit donor records (`/editDonor`), and delete records (`/deleteDonor`) with modal safety confirmations.
+- **Admin CSV Exporter (`/exportDonors`):** Instant export of all voluntary donor records with UTF-8 BOM encoding for complete Excel compatibility.
 - **Admin Certificate Inspection:** Administrators can review and print donation certificates for any registered donor on record.
 - **Secure Session Termination:** Complete session invalidation upon logout to prevent session fixation or replay attacks.
 
-### 4. Platform Governance & PWA
+### 4. Emergency & Geolocation Innovations
+- **🚨 Real-Time SOS Emergency Blood Broadcast (`/emergency`):** Live priority beacon connecting ICU patients, trauma cases, and urgent transfusions directly with nearby donors. Supports urgency categorization (*Critical within 2 hrs*, *High*, *Moderate*) with auto-persisted MySQL audit tables.
+- **📍 Interactive Leaflet Map & Proximity Locator (`/map.jsp`):** Embedded OpenStreetMap engine with HTML5 "Detect My Location" GPS geolocation, interactive 3km visual radius circles, donor location markers, and verified hospital blood centers.
+- **📲 Statutory Renewal & Spacing Reminders (`/reminders.jsp`):** Clinical recovery monitoring tracking mandatory 90-day (male) and 120-day (female) rest intervals, complete with 1-click WhatsApp renewal pings.
+- **🧮 Clinical Eligibility & Next Date Calculator (`/eligibility.jsp`):** Client-side calculator validating age (18–65), weight ($\ge 50\,\text{kg}$), and calculating exact calendar days until next permissible donation.
+- **💬 Direct WhatsApp & Cellular Emergency CTAs:** 1-click direct contact buttons on all donor result cards, beacon streams, and map pins for rapid emergency communication.
+
+### 5. Platform Governance & PWA
 - **Progressive Web App (PWA) Ready:** Includes `manifest.json` / `site.webmanifest` and mobile-optimized viewport controls.
 - **Search Engine Optimization (SEO):** Semantic HTML5, canonical URLs, `sitemap.xml`, and `robots.txt`.
 - **Custom Error Handling:** Branded, graceful error pages for `404 Not Found` and `500 Server Error`.
@@ -256,18 +270,20 @@ BloodDonorManagementSystem/
 │   │   │   ├── Main.java             # Embedded Tomcat launcher (Production entrypoint)
 │   │   │   ├── dao/
 │   │   │   │   ├── AdminDAO.java     # Admin authentication queries
-│   │   │   │   └── DonorDAO.java     # Donor CRUD, search, and duplicate checks
+│   │   │   │   ├── DonorDAO.java     # Donor CRUD, search, and duplicate checks
+│   │   │   │   └── EmergencyDAO.java # SOS emergency broadcast queries & persistence
 │   │   │   ├── filter/
 │   │   │   │   └── AdminAuthFilter.java # Intercepts & secures all /admin* endpoints
 │   │   │   ├── model/
 │   │   │   │   ├── Admin.java        # Admin POJO entity
-│   │   │   │   └── Donor.java        # Donor POJO entity
+│   │   │   │   ├── Donor.java        # Donor POJO entity
+│   │   │   │   └── EmergencyRequest.java # SOS emergency broadcast POJO entity
 │   │   │   ├── security/
 │   │   │   │   ├── AuthInputValidator.java # Whitelist input validation & multi-pass HTML/JS stripping
 │   │   │   │   ├── PasswordUtil.java       # BCrypt cost 12, constant-time verification & dummy timing
 │   │   │   │   └── RateLimiterAndLockoutService.java # Rate limiter (10/min), 15m lockout, progressive delay & CAPTCHA
 │   │   │   ├── servlet/
-│   │   │   │   ├── AdminDashboardServlet.java # Loads all donors into admin view
+│   │   │   │   ├── AdminDashboardServlet.java # Loads all donors into admin view with Chart.js analytics
 │   │   │   │   ├── AdminLoginServlet.java     # Authenticates admin credentials with rate limits & lockout
 │   │   │   │   ├── AdminLogoutServlet.java    # Destroys admin session
 │   │   │   │   ├── DeleteDonorServlet.java    # Removes donor record
@@ -275,10 +291,12 @@ BloodDonorManagementSystem/
 │   │   │   │   ├── DonorCertificateServlet.java # Generates donor appreciation certificate
 │   │   │   │   ├── DonorLoginServlet.java     # Authenticates donors by email/phone (timing equalized)
 │   │   │   │   ├── DonorLogoutServlet.java    # Destroys donor session
+│   │   │   │   ├── EmergencyServlet.java      # SOS broadcast controller (/emergency)
+│   │   │   │   ├── ExportDonorsServlet.java   # Admin CSV export handler (/exportDonors)
 │   │   │   │   ├── HealthServlet.java         # Container orchestration health probe (/health)
 │   │   │   │   ├── PasswordResetServlet.java  # Generic constant-time password recovery handler
 │   │   │   │   ├── RegisterDonorServlet.java  # Processes new donor registration with DPDP consent
-│   │   │   │   ├── SearchDonorServlet.java    # Multi-parameter donor search
+│   │   │   │   ├── SearchDonorServlet.java    # Multi-parameter donor search with 1-click WhatsApp CTA
 │   │   │   │   └── UpdateDonorServlet.java    # Updates existing donor details
 │   │   │   └── util/
 │   │   │       ├── DBConnection.java     # HikariCP connection pool with dynamic cloud environment detection
@@ -287,7 +305,7 @@ BloodDonorManagementSystem/
 │   │   └── webapp/
 │   │       ├── 404.jsp               # Custom Not Found error page
 │   │       ├── 500.jsp               # Custom Server Error page
-│   │       ├── admin-dashboard.jsp   # Admin donor management table
+│   │       ├── admin-dashboard.jsp   # Admin management table with Chart.js analytics
 │   │       ├── admin-login.jsp       # Admin authentication interface with CAPTCHA triggers
 │   │       ├── contact.jsp           # Healthcare support, inquiries & Grievance Officer details
 │   │       ├── cookie-policy.jsp     # Cookie disclosures, zero-tracking guarantee & browser controls
@@ -295,10 +313,14 @@ BloodDonorManagementSystem/
 │   │       ├── donor-certificate.jsp # Printable Certificate of Appreciation
 │   │       ├── donor-login.jsp       # Donor portal login interface with CAPTCHA
 │   │       ├── edit-donor.jsp        # Edit donor details modal/form
+│   │       ├── eligibility.jsp       # Clinical weight/age check & next eligible donation date calculator
+│   │       ├── emergency.jsp         # Real-time SOS emergency broadcast beacon interface
 │   │       ├── index.jsp             # Public landing page, factual metrics & search hero
 │   │       ├── manifest.json         # PWA Web App manifest
+│   │       ├── map.jsp               # Interactive Leaflet proximity map & hospital blood bank locator
 │   │       ├── privacy.jsp           # DPDP Act 2023 compliant Privacy Policy & data disclosure
 │   │       ├── register.jsp          # Donor onboarding form with statutory consent checkboxes
+│   │       ├── reminders.jsp         # Donor recovery interval tracking & WhatsApp renewal pings
 │   │       ├── reset-password.jsp    # Password recovery request interface
 │   │       ├── robots.txt            # Search engine crawler instructions
 │   │       ├── search.jsp            # Accessible donor search & filtered results view
@@ -358,7 +380,7 @@ BloodDonorManagementSystem/
 
 </div>
 
-The database consists of two normalized tables created in `blood_donor_db`:
+The database consists of three normalized tables created in `blood_donor_db`:
 
 ### 1. `donors` Table
 Stores public and registered voluntary donor profiles:
@@ -388,6 +410,23 @@ Stores administrative authentication credentials:
 | `full_name` | `VARCHAR(100)` | `NOT NULL` | Display name of system administrator |
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Account provisioning timestamp |
 
+### 3. `emergency_requests` Table
+Persists live SOS emergency blood requests:
+
+| Column | Data Type | Constraints | Description |
+|:---|:---|:---|:---|
+| `request_id` | `INT` | `PRIMARY KEY AUTO_INCREMENT` | Unique emergency broadcast identifier |
+| `patient_name` | `VARCHAR(100)` | `NOT NULL` | Patient legal name |
+| `blood_group` | `VARCHAR(5)` | `NOT NULL` | Required blood group |
+| `units_needed` | `INT` | `DEFAULT 1` | Quantity of whole blood units needed |
+| `hospital_name`| `VARCHAR(150)` | `NOT NULL` | Hospital or medical center name |
+| `city` | `VARCHAR(50)` | `NOT NULL, INDEX` | Municipality of patient/hospital |
+| `contact_person`| `VARCHAR(100)`| `NOT NULL` | Attending physician or guardian name |
+| `contact_phone` | `VARCHAR(15)` | `NOT NULL` | 10-digit direct emergency contact phone |
+| `urgency` | `VARCHAR(50)` | `DEFAULT 'Critical'` | Priority tier (*Critical*, *High*, *Moderate*) |
+| `status` | `VARCHAR(20)` | `DEFAULT 'OPEN'` | Broadcast status (*OPEN*, *FULFILLED*) |
+| `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Broadcast timestamp |
+
 ---
 
 ## 🚦 Application Endpoints & Routes
@@ -398,8 +437,12 @@ Stores administrative authentication credentials:
 | `/health` | `GET` | **Public / Ops** | Container orchestration health probe returning live service & MySQL connectivity status |
 | `/db-check.jsp` | `GET` | **Public / Ops** | Real-time database diagnostic dashboard inspecting live table rows & connection metrics |
 | `/seed.jsp` | `GET` | **Public / Ops** | Automated cloud database seeder initializing tables, admin users & starter donors |
+| `/emergency` | `GET` / `POST` | **Public** | 🚨 SOS Emergency Blood Broadcast stream and real-time beacon submission |
+| `/map.jsp` | `GET` | **Public** | 📍 Interactive Leaflet proximity map with HTML5 GPS auto-detection |
+| `/eligibility.jsp`| `GET` | **Public** | 🧮 Clinical donor eligibility checker and next donation date calculator |
+| `/reminders.jsp` | `GET` | **Public / Admin**| 📲 Mandatory interval recovery tracker with 1-click WhatsApp renewal pings |
 | `/registerDonor` | `GET` / `POST` | **Public** | Form render and submission for new donor registrations with DPDP consent |
-| `/searchDonors` | `GET` | **Public** | Search and filter donors by blood group and city |
+| `/searchDonors` | `GET` | **Public** | Search and filter donors by blood group/city with direct WhatsApp CTA |
 | `/contact.jsp` | `GET` | **Public** | Healthcare helpdesk, inquiries, and Grievance Officer contacts |
 | `/privacy.jsp` | `GET` | **Public** | DPDP Act 2023 compliant privacy policy, data principal rights, and grievance process |
 | `/terms.jsp` | `GET` | **Public** | Terms of service, clinical responsibilities, and statutory non-commercial disclaimer |
@@ -411,7 +454,8 @@ Stores administrative authentication credentials:
 | `/resetPassword` | `GET` / `POST` | **Public** | Secure password reset request handler with uniform timing to thwart user enumeration |
 | `/adminLogin` | `GET` / `POST` | **Public** | Administrator login with BCrypt, rate limiting (10/min), 15m lockout, and CAPTCHA |
 | `/adminLogout` | `GET` | **Admin** | Invalidate admin session and redirect to login |
-| `/adminDashboard` | `GET` | **Admin Only** | Protected dashboard displaying all donors with management controls |
+| `/adminDashboard` | `GET` | **Admin Only** | Protected dashboard displaying all donors with management controls & Chart.js analytics |
+| `/exportDonors` | `GET` | **Admin Only** | Export all registered donors into UTF-8 BOM CSV format for spreadsheets |
 | `/editDonor` | `GET` / `POST` | **Admin Only** | Fetch existing donor details and persist modifications |
 | `/deleteDonor` | `GET` / `POST` | **Admin Only** | Permanently remove a donor record by ID |
 

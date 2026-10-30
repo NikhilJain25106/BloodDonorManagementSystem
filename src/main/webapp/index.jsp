@@ -28,6 +28,12 @@
                     <a href="<%= cp %>/registerDonor" class="btn-hero-primary">
                         <i class="fa-solid fa-hand-holding-heart"></i> Become a Donor
                     </a>
+                    <a href="<%= cp %>/emergency" class="btn-hero-secondary" style="border:1.5px solid rgba(244,63,94,0.6);background:rgba(225,29,72,0.18);">
+                        <i class="fa-solid fa-tower-broadcast text-danger"></i> SOS Beacon
+                    </a>
+                    <a href="<%= cp %>/map.jsp" class="btn-hero-secondary" style="border:1.5px solid rgba(59,130,246,0.6);background:rgba(59,130,246,0.18);">
+                        <i class="fa-solid fa-map-location-dot text-primary"></i> Live Map
+                    </a>
                     <a href="<%= cp %>/eligibility.jsp" class="btn-hero-secondary" style="border:1.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);">
                         <i class="fa-solid fa-calculator"></i> Check Eligibility
                     </a>

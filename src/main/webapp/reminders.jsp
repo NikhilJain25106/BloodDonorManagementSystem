@@ -42,21 +42,27 @@
                             while (rs.next()) {
                                 hasAny = true;
                                 Date lastDate = rs.getDate("last_donation_date");
-                                String name = rs.getString("full_name");
-                                String phone = rs.getString("phone");
-                                String blood = rs.getString("blood_group");
+                                String name = rs.getString("full_name") != null ? rs.getString("full_name") : "Donor";
+                                String phone = rs.getString("phone") != null ? rs.getString("phone") : "";
+                                String blood = rs.getString("blood_group") != null ? rs.getString("blood_group") : "";
+                                String city = rs.getString("city") != null ? rs.getString("city") : "";
+                                String cleanPhone = phone.replaceAll("[^0-9]", "");
                     %>
                     <tr>
                         <td class="fw-bold"><%= name %></td>
                         <td><span class="badge bg-danger"><%= blood %></span></td>
-                        <td><%= rs.getString("city") %></td>
+                        <td><%= city %></td>
                         <td><%= lastDate != null ? lastDate.toString() : "First-time Donor" %></td>
                         <td><span class="badge bg-success">Ready to Donate</span></td>
                         <td>
-                            <a href="https://wa.me/91<%= phone.replaceAll("[^0-9]","") %>?text=Hello%20<%= java.net.URLEncoder.encode(name, "UTF-8") %>,%20greetings%20from%20LifeDrop!%20Your%20mandatory%20recovery%20period%20is%20now%20complete%20and%20your%20body%20is%20ready%20to%20save%20another%20life.%20Are%20you%20available%20for%20donation%20this%20week?"
-                               target="_blank" class="btn btn-sm btn-outline-success">
+                            <% if (!cleanPhone.isEmpty()) { %>
+                            <a href="https://wa.me/91<%= cleanPhone %>?text=Hello%20<%= java.net.URLEncoder.encode(name, "UTF-8") %>,%20greetings%20from%20LifeDrop!%20Your%20mandatory%20recovery%20period%20is%20now%20complete%20and%20your%20body%20is%20ready%20to%20save%20another%20life.%20Are%20you%20available%20for%20donation%20this%20week?"
+                               target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success">
                                 <i class="fa-brands fa-whatsapp me-1"></i> Send Renewal Ping
                             </a>
+                            <% } else { %>
+                            <span class="text-muted small">No Phone</span>
+                            <% } %>
                         </td>
                     </tr>
                     <%

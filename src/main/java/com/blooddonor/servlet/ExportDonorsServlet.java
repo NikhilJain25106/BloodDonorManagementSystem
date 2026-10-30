@@ -32,7 +32,7 @@ public class ExportDonorsServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("adminUsername") == null) {
-            response.sendRedirect("admin-login.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin-login.jsp");
             return;
         }
 

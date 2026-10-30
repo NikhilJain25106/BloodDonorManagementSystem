@@ -52,11 +52,47 @@
 
     // Marker collections from database
     const donors = [
+<%
+    boolean dbDonorsFound = false;
+    try (Connection conn = DBConnection.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery("SELECT full_name, blood_group, city, phone FROM donors LIMIT 50")) {
+        
+        java.util.Map<String, double[]> cityMap = new java.util.HashMap<>();
+        cityMap.put("mumbai", new double[]{19.0760, 72.8777});
+        cityMap.put("pune", new double[]{18.5204, 73.8567});
+        cityMap.put("delhi", new double[]{28.6139, 77.2090});
+        cityMap.put("bangalore", new double[]{12.9716, 77.5946});
+        cityMap.put("hyderabad", new double[]{17.3850, 78.4867});
+        cityMap.put("chennai", new double[]{13.0827, 80.2707});
+        cityMap.put("kolkata", new double[]{22.5726, 88.3639});
+        cityMap.put("ahmedabad", new double[]{23.0225, 72.5714});
+        cityMap.put("thane", new double[]{19.2183, 72.9781});
+        cityMap.put("navi mumbai", new double[]{19.0330, 73.0297});
+        
+        while (rs.next()) {
+            dbDonorsFound = true;
+            String dName = rs.getString("full_name") != null ? rs.getString("full_name").replace("'", "\\'") : "Donor";
+            String dBlood = rs.getString("blood_group") != null ? rs.getString("blood_group") : "";
+            String dCity = rs.getString("city") != null ? rs.getString("city").replace("'", "\\'") : "India";
+            String dPhone = rs.getString("phone") != null ? rs.getString("phone") : "";
+            
+            double[] coords = cityMap.getOrDefault(dCity.toLowerCase().trim(), new double[]{19.0760, 72.8777});
+            double jitterLat = coords[0] + (Math.random() - 0.5) * 0.05;
+            double jitterLng = coords[1] + (Math.random() - 0.5) * 0.05;
+%>
+        { name: '<%= dName %>', blood: '<%= dBlood %>', city: '<%= dCity %>', lat: <%= jitterLat %>, lng: <%= jitterLng %>, phone: '<%= dPhone %>' },
+<%
+        }
+    } catch (Exception ignored) {}
+    if (!dbDonorsFound) {
+%>
         { name: "Rohan Mehta", blood: "O+", city: "Mumbai, Bandra", lat: 19.0596, lng: 72.8295, phone: "9876543210" },
         { name: "Priya Sharma", blood: "A+", city: "Pune, Shivaji Nagar", lat: 18.5314, lng: 73.8446, phone: "9876543211" },
         { name: "Aman Khan", blood: "B-", city: "Mumbai, Andheri", lat: 19.1136, lng: 72.8697, phone: "9876543212" },
         { name: "Ananya Deshmukh", blood: "AB+", city: "Mumbai, Dadar", lat: 19.0178, lng: 72.8478, phone: "9876543213" },
         { name: "Vikram Patel", blood: "O-", city: "Pune, Kothrud", lat: 18.5074, lng: 73.8077, phone: "9876543214" }
+<%  } %>
     ];
 
     const bloodBanks = [
@@ -83,7 +119,7 @@
                 <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1"></i>` + d.city + `</p>
                 <div class="d-flex gap-1">
                     <a href="tel:` + d.phone + `" class="btn btn-sm btn-outline-danger flex-fill">Call</a>
-                    <a href="https://wa.me/91` + d.phone + `" target="_blank" class="btn btn-sm btn-success flex-fill">WhatsApp</a>
+                    <a href="https://wa.me/91` + d.phone.replace(/[^0-9]/g, '') + `" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success flex-fill" style="background:#25D366;border-color:#25D366;">WhatsApp</a>
                 </div>
             </div>
         `);
