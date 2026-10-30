@@ -91,7 +91,16 @@ public class DBConnection {
                     }
                 }
             } else if (mysqlUrl.startsWith("jdbc:mysql://")) {
-                jdbcUrl = mysqlUrl;
+                String stripped = mysqlUrl.replace("jdbc:mysql://", "");
+                String[] slashSplit = stripped.split("/", 2);
+                String[] hostPort = slashSplit[0].split(":", 2);
+                host = hostPort[0];
+                if (hostPort.length > 1) {
+                    port = hostPort[1];
+                }
+                if (slashSplit.length > 1) {
+                    database = slashSplit[1].split("\\?")[0];
+                }
             }
             isCloudDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host) && !"db".equalsIgnoreCase(host));
         }
