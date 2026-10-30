@@ -67,6 +67,9 @@ public class DBConnection {
 
         String jdbcUrl;
 
+        boolean isCloudDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host) && !"db".equalsIgnoreCase(host));
+        String sslParam = isCloudDb ? "true" : "false";
+
         if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
             // Full URL provided (e.g. mysql://user:pass@host:port/dbname)
             if (mysqlUrl.startsWith("mysql://")) {
@@ -91,11 +94,13 @@ public class DBConnection {
             } else if (mysqlUrl.startsWith("jdbc:mysql://")) {
                 jdbcUrl = mysqlUrl;
             }
+            isCloudDb = (!"localhost".equalsIgnoreCase(host) && !"127.0.0.1".equals(host) && !"db".equalsIgnoreCase(host));
+            sslParam = isCloudDb ? "true" : "false";
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+                    + "?useSSL=" + sslParam + "&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
         } else {
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+                    + "?useSSL=" + sslParam + "&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
         }
 
         HikariDataSource ds = null;
