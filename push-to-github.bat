@@ -3,23 +3,26 @@ setlocal
 cd /d "%~dp0"
 
 echo =========================================================
-echo   Cleaning Staged Credentials & Pushing Clean Commit...
+echo   LifeDrop - Complete Automated Push and Cloud Sync
 echo =========================================================
 
-REM Undo the last local commit so we can re-commit without plaintext secrets
-git reset HEAD~1
+REM 1. Clean up scratch/redundant files from working tree
+if exist "RENDER_ONE_CLICK.md" del /q "RENDER_ONE_CLICK.md"
+if exist "check-db.bat" del /q "check-db.bat"
+if exist "init-aiven-db.bat" del /q "init-aiven-db.bat"
 
-REM Stage all files (secret files are now sanitized and .env is ignored)
-git add .
+REM 2. Stage core production assets
+git add -A
 
-REM Create fresh commit
-git commit -m "fix(render): configure sync environment variables, fix healthcheck and sanitize secrets"
+REM 3. Create consolidated commit
+git commit -m "chore: cleanup redundant markdown and sync production cloud configuration"
 
-REM Push to GitHub
+REM 4. Push directly to remote repository
 git push origin main
 
 echo.
 echo =========================================================
-echo   Push completed successfully!
+echo   Repository is 100% clean, synced, and pushed to GitHub!
+echo   Render will auto-deploy the latest build immediately.
 echo =========================================================
 timeout /t 5

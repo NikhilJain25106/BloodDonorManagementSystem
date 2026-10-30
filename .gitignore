@@ -1,5 +1,10 @@
-# Maven build output - never commit compiled files
+# Maven build output
 target/
+
+# Temporary / Scratch Files
+RENDER_ONE_CLICK.md
+check-db.bat
+init-aiven-db.bat
 
 # VS Code settings
 .vscode/*
