@@ -37,6 +37,11 @@ if %errorlevel% neq 0 (
     git push origin main
 )
 
+echo.
+echo Triggering Render Deploy Webhook...
+curl.exe -s -X POST "https://api.render.com/deploy/srv-dbi8n967bikc73af7ajg?key=EJAVcMSX-rQ" >nul 2>&1
+echo [OK] Render deployment triggered!
+
 if %errorlevel% equ 0 (
     echo.
     echo ===============================================================================
