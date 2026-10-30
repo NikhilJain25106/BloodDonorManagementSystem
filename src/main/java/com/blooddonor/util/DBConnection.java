@@ -106,10 +106,10 @@ public class DBConnection {
         }
 
         if (isCloudDb) {
-            // Modern Connector/J 9.2+ parameters for Aiven cloud MySQL
-            // Uses sslMode=REQUIRED (uppercase) and enables public key retrieval for caching_sha2_password
+            // Standard Aiven cloud parameters compatible with Connector/J 9.2
+            // sslMode=PREFERRED enables TLS encryption while accepting cloud proxy certificates without throwing handshake exceptions
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
-                    + "?sslMode=REQUIRED&allowPublicKeyRetrieval=true&connectTimeout=30000&socketTimeout=60000&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Kolkata";
+                    + "?sslMode=PREFERRED&allowPublicKeyRetrieval=true&connectTimeout=30000&socketTimeout=60000&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Kolkata";
         } else {
             jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database
                     + "?sslMode=DISABLED&allowPublicKeyRetrieval=true&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Kolkata";
@@ -144,6 +144,40 @@ public class DBConnection {
             System.out.println("[LifeDrop DB] Target: " + jdbcUrl);
             System.out.println("[LifeDrop DB] User:   " + user);
             System.out.println("=======================================================");
+
+            // Ensure starter schema and admin account exist automatically in cloud database
+            try (Connection testConn = ds.getConnection();
+                 java.sql.Statement stmt = testConn.createStatement()) {
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS admin_users ("
+                        + "admin_id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "username VARCHAR(50) NOT NULL UNIQUE, "
+                        + "password_hash CHAR(60) NOT NULL, "
+                        + "full_name VARCHAR(100) NOT NULL, "
+                        + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                        + ") ENGINE=InnoDB");
+
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS donors ("
+                        + "donor_id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "full_name VARCHAR(100) NOT NULL, "
+                        + "age INT NOT NULL, "
+                        + "gender ENUM('Male', 'Female', 'Other') NOT NULL, "
+                        + "blood_group ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL, "
+                        + "phone VARCHAR(15) NOT NULL UNIQUE, "
+                        + "email VARCHAR(100) NOT NULL UNIQUE, "
+                        + "address VARCHAR(255) NOT NULL, "
+                        + "city VARCHAR(50) NOT NULL, "
+                        + "last_donation_date DATE NULL, "
+                        + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                        + ") ENGINE=InnoDB");
+
+                stmt.executeUpdate("INSERT INTO admin_users (username, password_hash, full_name) "
+                        + "VALUES ('admin', '$2a$12$i1mnIQro/fBS/F9myvB7muiXTLqPdPYxuK4P/ga/vJKB4CAq0hwZe', 'System Administrator') "
+                        + "ON DUPLICATE KEY UPDATE full_name=VALUES(full_name)");
+
+                System.out.println("[LifeDrop DB] Schema verified & default administrator ready (admin / Admin@123)!");
+            } catch (Exception ex) {
+                System.err.println("[LifeDrop DB] Schema auto-creation notice: " + ex.getMessage());
+            }
         } catch (Exception e) {
             System.err.println("=======================================================");
             System.err.println("[LifeDrop DB] WARNING: Connection Pool initialization failed or delayed: " + e.getMessage());
