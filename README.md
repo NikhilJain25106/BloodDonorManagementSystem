@@ -153,14 +153,26 @@ The full project report is published directly within the repository in both mark
 ### Home Page & Quick Search
 ![Home Page](screenshots/home.png)
 
-### Donor Registration Portal
-![Donor Registration](screenshots/register.png)
+### 🚨 Real-Time SOS Emergency Blood Broadcast
+![SOS Emergency Broadcast](screenshots/emergency.png)
 
-### Search & Filter Donors
+### 📍 Interactive Leaflet Proximity Map & Blood Bank Locator
+![Interactive Locator Map](screenshots/map.png)
+
+### 🧮 Clinical Donor Eligibility & Next Date Calculator
+![Eligibility Calculator](screenshots/eligibility.png)
+
+### Search & Filter Donors (with 1-Click WhatsApp & Phone Actions)
 ![Search Donors](screenshots/search.png)
 
-### Admin Management Dashboard
+### Donor Onboarding & DPDP Consent Registration Portal
+![Donor Registration](screenshots/register.png)
+
+### Admin Management Dashboard with Chart.js Visual Analytics
 ![Admin Dashboard](screenshots/dashboard.png)
+
+### 📲 Statutory Renewal & Spacing Reminders
+![Renewal Reminders](screenshots/reminders.png)
 
 ### Personalized Digital Donor ID Card
 ![Donor Card](screenshots/donor-card.png)
