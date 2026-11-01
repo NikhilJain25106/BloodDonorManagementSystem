@@ -27,6 +27,22 @@
                 try (Connection conn = DBConnection.getConnection();
                      Statement stmt = conn.createStatement()) {
 
+                    // Access Control: Allow initial bootstrap (0 admins) or authenticated admin
+                    boolean allowSeeding = (session != null && session.getAttribute("adminUsername") != null);
+                    if (!allowSeeding) {
+                        try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM admin_users")) {
+                            if (rs.next() && rs.getInt(1) == 0) {
+                                allowSeeding = true;
+                            }
+                        } catch (Exception ignored) {
+                            allowSeeding = true; // table doesn't exist yet
+                        }
+                    }
+
+                    if (!allowSeeding) {
+                        message = "Access Denied: Database is already provisioned. Administrator authentication is required to run seeder.";
+                    } else {
+
                     // 1. Create tables
                     stmt.executeUpdate("CREATE TABLE IF NOT EXISTS admin_users ("
                             + "admin_id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -65,6 +81,7 @@
 
                     success = true;
                     message = "Successfully created tables and inserted 5 voluntary blood donors!";
+                    }
                 } catch (Exception e) {
                     success = false;
                     message = "Error: " + e.getMessage();

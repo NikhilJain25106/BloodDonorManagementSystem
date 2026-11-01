@@ -1,6 +1,13 @@
 <%@ include file="includes/header.jsp" %>
 <%@ page import="java.sql.*, java.util.Date, com.blooddonor.util.DBConnection" %>
 
+<%
+    if (session == null || session.getAttribute("adminUsername") == null) {
+        response.sendRedirect(request.getContextPath() + "/admin-login.jsp");
+        return;
+    }
+%>
+
 <!-- PAGE HERO -->
 <section class="page-hero" style="background:linear-gradient(135deg,#064e3b 0%,#047857 100%);">
     <div class="container" style="position:relative;z-index:1;">

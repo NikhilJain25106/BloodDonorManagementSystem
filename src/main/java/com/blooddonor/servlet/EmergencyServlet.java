@@ -34,6 +34,14 @@ public class EmergencyServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String clientIp = AuthInputValidator.getClientIp(request);
+        if (!com.blooddonor.security.RateLimiterAndLockoutService.getInstance().checkIpRateLimit(clientIp)) {
+            response.setStatus(429);
+            request.setAttribute("errorMessage", "Too many broadcast requests from your IP. Please wait a minute before posting again.");
+            doGet(request, response);
+            return;
+        }
+
         request.setCharacterEncoding("UTF-8");
         String patientName = request.getParameter("patientName");
         String bloodGroup = request.getParameter("bloodGroup");

@@ -163,19 +163,24 @@
                     </thead>
                     <tbody>
                         <%
+                            boolean isAdminUser = (session != null && session.getAttribute("adminUsername") != null);
                             Statement stmtDonors = conn.createStatement();
                             ResultSet rsList = stmtDonors.executeQuery("SELECT * FROM donors ORDER BY created_at DESC LIMIT 15");
                             boolean hasDonors = false;
                             while (rsList.next()) {
                                 hasDonors = true;
+                                String p = rsList.getString("phone");
+                                String maskedPhone = (isAdminUser || p == null) ? p : (p.length() >= 5 ? p.substring(0, 4) + "******" : "******");
+                                String em = rsList.getString("email");
+                                String maskedEmail = (isAdminUser || em == null) ? em : (em.contains("@") ? em.substring(0, Math.min(2, em.indexOf('@'))) + "***@" + em.substring(em.indexOf('@') + 1) : "******");
                         %>
                         <tr>
                             <td><strong>#<%= rsList.getInt("donor_id") %></strong></td>
                             <td><%= rsList.getString("full_name") %></td>
                             <td><span class="badge bg-danger"><%= rsList.getString("blood_group") %></span></td>
                             <td><%= rsList.getString("city") %></td>
-                            <td><%= rsList.getString("phone") %></td>
-                            <td><%= rsList.getString("email") %></td>
+                            <td><%= maskedPhone %></td>
+                            <td><%= maskedEmail %></td>
                             <td><small class="text-muted"><%= rsList.getTimestamp("created_at") %></small></td>
                         </tr>
                         <%

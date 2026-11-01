@@ -160,4 +160,13 @@ public class AuthHardeningTest {
         assertDoesNotThrow(() -> PasswordUtil.dummyVerify("CandidatePassword123"));
         assertDoesNotThrow(() -> PasswordUtil.dummyVerify(null));
     }
+
+    @Test
+    @DisplayName("Phone validation should enforce 10 digits and strip formatting")
+    public void testPhoneValidation() {
+        assertEquals("9876543210", AuthInputValidator.validatePhone("9876543210"));
+        assertEquals("9876543210", AuthInputValidator.validatePhone("+91 98765-43210"));
+        assertThrows(IllegalArgumentException.class, () -> AuthInputValidator.validatePhone("12345"));
+        assertThrows(IllegalArgumentException.class, () -> AuthInputValidator.validatePhone(null));
+    }
 }

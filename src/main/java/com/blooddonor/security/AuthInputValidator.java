@@ -119,6 +119,11 @@ public class AuthInputValidator {
             throw new IllegalArgumentException("Phone number is required.");
         }
         String clean = phone.trim().replaceAll("[^0-9]", "");
+        if (clean.length() == 12 && clean.startsWith("91")) {
+            clean = clean.substring(2);
+        } else if (clean.length() == 11 && clean.startsWith("0")) {
+            clean = clean.substring(1);
+        }
         if (clean.length() != 10) {
             throw new IllegalArgumentException("Phone number must be exactly 10 digits.");
         }
@@ -146,5 +151,17 @@ public class AuthInputValidator {
             stripped = stripped.substring(0, maxLength);
         }
         return stripped;
+    }
+
+    /**
+     * Resolves the real client IP address, safely checking proxy headers like X-Forwarded-For.
+     */
+    public static String getClientIp(javax.servlet.http.HttpServletRequest request) {
+        if (request == null) return "127.0.0.1";
+        String xf = request.getHeader("X-Forwarded-For");
+        if (xf != null && !xf.isEmpty()) {
+            return xf.split(",")[0].trim();
+        }
+        return request.getRemoteAddr() != null ? request.getRemoteAddr() : "127.0.0.1";
     }
 }

@@ -273,7 +273,8 @@ BloodDonorManagementSystem/
 │   │   │   │   ├── DonorDAO.java     # Donor CRUD, search, and duplicate checks
 │   │   │   │   └── EmergencyDAO.java # SOS emergency broadcast queries & persistence
 │   │   │   ├── filter/
-│   │   │   │   └── AdminAuthFilter.java # Intercepts & secures all /admin* endpoints
+│   │   │   │   ├── AdminAuthFilter.java # Intercepts & secures all /admin* endpoints
+│   │   │   │   └── SecurityHeadersFilter.java # Enterprise HTTP response security headers
 │   │   │   ├── model/
 │   │   │   │   ├── Admin.java        # Admin POJO entity
 │   │   │   │   ├── Donor.java        # Donor POJO entity
@@ -440,7 +441,7 @@ Persists live SOS emergency blood requests:
 | `/emergency` | `GET` / `POST` | **Public** | 🚨 SOS Emergency Blood Broadcast stream and real-time beacon submission |
 | `/map.jsp` | `GET` | **Public** | 📍 Interactive Leaflet proximity map with HTML5 GPS auto-detection |
 | `/eligibility.jsp`| `GET` | **Public** | 🧮 Clinical donor eligibility checker and next donation date calculator |
-| `/reminders.jsp` | `GET` | **Public / Admin**| 📲 Mandatory interval recovery tracker with 1-click WhatsApp renewal pings |
+| `/reminders.jsp` | `GET` | **Admin Only** | 📲 Mandatory interval recovery tracker with 1-click WhatsApp renewal pings |
 | `/registerDonor` | `GET` / `POST` | **Public** | Form render and submission for new donor registrations with DPDP consent |
 | `/searchDonors` | `GET` | **Public** | Search and filter donors by blood group/city with direct WhatsApp CTA |
 | `/contact.jsp` | `GET` | **Public** | Healthcare helpdesk, inquiries, and Grievance Officer contacts |
@@ -661,8 +662,8 @@ LifeDrop includes an automated test suite powered by **JUnit 5** with parameteri
 mvn test
 ```
 
-### Test Suite Breakdown (55 Tests Passing):
-1. **Authentication Security & Hardening Tests (`AuthHardeningTest.java` — 24 Tests):**
+### Test Suite Breakdown (56 Tests Passing):
+1. **Authentication Security & Hardening Tests (`AuthHardeningTest.java` — 25 Tests):**
    - RFC-compliant email, username whitelist, and phone schema server-side validations.
    - Comprehensive XSS prevention: stripping `<script>`, `<style>` blocks, inline event handlers, and malicious tags.
    - Rate limiting: enforcement of max 10 requests/IP/minute with HTTP 429 triggers.

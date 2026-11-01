@@ -3,8 +3,17 @@
 <%@ page import="com.blooddonor.model.Donor" %>
 
 <%
+    if (session == null || session.getAttribute("adminUsername") == null) {
+        response.sendRedirect(request.getContextPath() + "/admin-login.jsp");
+        return;
+    }
+
     List<Donor> donors = (List<Donor>) request.getAttribute("donors");
-    int total = (donors != null) ? donors.size() : 0;
+    if (donors == null) {
+        response.sendRedirect(request.getContextPath() + "/adminDashboard");
+        return;
+    }
+    int total = donors.size();
 
     // Count by gender
     int male = 0, female = 0, other = 0;
